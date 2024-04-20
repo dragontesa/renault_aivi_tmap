@@ -1,0 +1,3 @@
+#!/bin/sh
+LayerManagerControl set screen 1 render order 6003
+LayerManagerControl set surface 103 visibility 1

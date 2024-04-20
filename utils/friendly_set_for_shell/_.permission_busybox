@@ -1,0 +1,7 @@
+#!/bin/bash
+rwrfs
+chmod o+x /bin/bash
+chmod o+x /bin/busybox.nosuid
+chmod o+x /bin/su
+rorfs
+

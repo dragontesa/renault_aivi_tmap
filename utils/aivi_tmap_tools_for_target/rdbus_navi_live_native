@@ -1,0 +1,3 @@
+#!/bin/sh
+eval `cat /tmp/dbus_session.conf`; export DBUS_SESSION_BUS_ADDRESS
+dbus-monitor path=/com/bosch/cm/ai/navigation

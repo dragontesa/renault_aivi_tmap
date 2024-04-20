@@ -1,0 +1,32 @@
+#!/bin/sh
+FROM=../utils
+TO=root@172.17.0.1:/home/root/bin
+ssh root@172.17.0.1 'rwrfs'
+ssh root@172.17.0.1 'mkdir -p /home/root/bin'
+
+if [ ! $# -gt 0 ]; then
+scp $FROM/aivi_tmap_tools_for_target/r* $TO
+scp $FROM/r* $TO
+#scp $FROM/showSoftmenu $TO
+#scp $FROM/showSfc103 $TO
+ssh root@172.17.0.1 'cd /home/root/bin && chmod +rx *'
+
+else
+FILES=$1
+scp $FROM/aivi_tmap_tools_for_target/$FILES $TO
+#scp $FROM/showSoftmenu $TO
+#scp $FROM/showSfc103 $TO
+ssh root@172.17.0.1 "chmod +rx /home/root/bin/"$FILES
+fi
+scp vr root@172.17.0.1:/home/root
+scp showInfo root@172.17.0.1:/home/root
+scp Test_ecm_by_openssl root@172.17.0.1:/opt/bosch/extnav/bin/
+scp Test_ecm_by_openssl root@172.17.0.1:/var/lib/lxc/extnav/rootfs/opt/bosch/
+ssh root@172.17.0.1 'chmod +x /home/root/showInfo'
+ssh root@172.17.0.1 'chmod +x /home/root/vr'
+ssh root@172.17.0.1 'chmod +x /opt/bosch/extnav/bin/Test_ecm_by_openssl'
+ssh root@172.17.0.1 'chmod +x /var/lib/lxc/extnav/rootfs/opt/bosch/Test_ecm_by_openssl'
+ssh root@172.17.0.1 'sync'
+ssh root@172.17.0.1 'rorfs'
+
+echo "upload tools done !!"

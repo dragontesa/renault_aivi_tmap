@@ -1,0 +1,21 @@
+#!/bin/sh
+cd /lib/systemd/system
+if [ -f ./rbcm-navigationhall_ext_korea.service ]; then
+systemctl stop rbcm-navigationhall_ext_korea.service
+systemctl status rbcm-navigationhall_ext_korea.service
+echo "navigationhall service stopping.."
+echo ".."
+rwrfs
+mv rbcm-navigationhall_ext_korea.service 00rbcm-navigationhall_ext_korea.service
+sync
+elif [ -f ./00rbcm-navigationhall_ext_korea.service ]; then
+systemctl stop 00rbcm-navigationhall_ext_korea.service
+systemctl status 00rbcm-navigationhall_ext_korea.service
+echo "navigationhall service stopping.."
+echo ".."
+fi
+# stop lxc service 
+systemctl stop rbcm-lxc-extnav.service
+systemctl status rbcm-lxc-extnav.service
+ls -lt /lib/systemd/system | grep korea 
+systemctl -a | grep korea 

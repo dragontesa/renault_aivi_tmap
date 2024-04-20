@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>sample.qml</file>
+        <file>assets/local_public.pem</file>
+        <file>assets/vsm_public.pem</file>
+    </qresource>
+</RCC>

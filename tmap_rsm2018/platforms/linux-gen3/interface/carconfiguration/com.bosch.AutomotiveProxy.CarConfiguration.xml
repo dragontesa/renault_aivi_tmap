@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+<!--
+ com.bosch.AutomotiveProxy.CarConfiguration:
+ @short_description: This interface offers a method to get the Car Configuration data
+ available on Automotive domain to Consumer domain. The received data can be
+ interpreted as indicated in the header file.
+ @since: 1.0
+
+-->
+<interface name="com.bosch.AutomotiveProxy.CarConfiguration">
+
+<!--
+   GetConfigurationValue:
+   @key:  Specifies the required configuration.
+   @value: A variant which specifies the value of the configuration data.
+   The result may be int,float,double or any string wrapped into variant
+   and sent to consumer domain.
+   @since: 1.0
+
+    This method should be called by Consumer domain to request the
+    configuration value of a component available in Automotive domain.
+
+    Possible errors could be:
+    #APCarConfigurationError.
+
+    The input parameter "key"  is an enum, specifies the
+    component from which the Configuration data to be read.
+
+    The availabale key from the Automotive domain is listed in the
+    #ApCarConfiguration
+
+    The consumer domain should pass the key to Automotive domain.
+
+    Example: If the consumer domain is interested to get speed lock restrictions
+    parameters then consumer domain should pass the key corresponding to speed lock
+    restrictions parameters.
+
+    GetConfigurationValue(AP_CARCONFIGURATION_SPEEDLOCK_RESTRICT_PARAMS);
+
+    The out parameter "value" is a variant, specifies the value of the
+    requested configuration.
+
+    Example: For speed restriction parameters the output value is of the form a(yb)
+
+    {
+      AP_CARCONFIG_VIDEO_PLAYING_RESTRICTION: false,
+      AP_CARCONFIG_PICTURE_SLIDESHOW_RESTRICTION true,
+      AP_CARCONFIG_TEXT_INPUT_RESTRICTION: false,
+      AP_CARCONFIG_NAVI_DESTINATION_INPUT_RESTRICTION: false,
+      AP_CARCONFIG_GENERAL_HMI_RESTRICTION: true,
+      AP_CARCONFIG_HMI_ANIMATIONS_RESTRICTION: true,
+      AP_CARCONFIG_DRAGGING_OPERATION_RESTRICTION: true
+    }
+-->
+  <method name="GetConfigurationValue">
+    <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+    <arg name="key" type="y" direction="in"/>
+    <arg name="value" type="v" direction="out"/>
+  </method>
+
+</interface>
+</node>

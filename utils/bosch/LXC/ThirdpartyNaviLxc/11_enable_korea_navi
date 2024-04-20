@@ -1,0 +1,8 @@
+#!/bin/sh
+rwrfs
+mv /lib/systemd/system/00rbcm-navigationhall_ext_korea.service /lib/systemd/system/rbcm-navigationhall_ext_korea.service
+mv /opt/bosch/base/bin/00navigationhall_ext-korea_out.out /opt/bosch/base/bin/navigationhall_ext-korea_out.out
+mv /opt/bosch/base/bin/00NavigationHall_ext_korea_logConfig.json /opt/bosch/base/bin/NavigationHall_ext_korea_logConfig.json
+mv /opt/bosch/hmibase/lib/00libhmisdkbase_so.so /opt/bosch/hmibase/lib/libhmisdkbase_so.so
+sync
+reboot -f

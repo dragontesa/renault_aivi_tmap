@@ -1,0 +1,11 @@
+#!/bin/sh
+rwrfs
+ln -sf libboost_system.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_system.so
+ln -sf libboost_system.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_system.so.0
+ln -sf libboost_random.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_random.so
+ln -sf libboost_random.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_random.so.0
+ln -sf libboost_date_time.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_date_time.so
+ln -sf libboost_date_time.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_date_time.so.0
+sync
+rorfs
+

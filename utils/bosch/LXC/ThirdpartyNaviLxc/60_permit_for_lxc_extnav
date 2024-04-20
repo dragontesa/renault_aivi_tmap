@@ -1,0 +1,29 @@
+#!/bin/sh
+DEVICE=root@172.17.0.1
+#NAVI_DIR=/opt/bosch/navigation_kor
+#DATA_DIR=/var/opt/bosch/dynamic/navigation_kor
+#MAP_DIR=/var/opt/bosch/navdata
+# set permissions
+echo "set permissions .."
+ssh $DEVICE 'rwrfs'
+ssh $DEVICE 'chmod +x /opt/bosch/base/bin/navigationhall_ext-korea_out.out'
+ssh $DEVICE 'chmod +x /opt/bosch/hmibase/lib/libhmisdkbase_so.so'
+ssh $DEVICE 'chmod +x /home/root/thirdparty-navi-container_armv7a.ipk'
+ssh $DEVICE 'chmod +x /home/root/create_container_links.pl'
+ssh $DEVICE 'chmod +rx /opt/bosch/navigation_kor'
+ssh $DEVICE 'chmod -R +rx /opt/bosch/navigation_kor/lib'
+ssh $DEVICE 'chmod -R +rx /opt/bosch/navigation_kor/res'
+ssh $DEVICE 'chown -R lxc_extnav:lxc_extnav /var/opt/bosch/dynamic/navigation_kor'
+ssh $DEVICE 'chmod +x /opt/bosch/extnav/thirdpartynavigation_out.out'
+ssh $DEVICE 'chown lxc_extnav:lxc_extnav /opt/bosch/extnav'
+#ssh $DEVICE 'find /var/opt/bosch/navdata -type d -exec chmod 755 {} +'
+#ssh $DEVICE 'find /var/opt/bosch/navdata -type f -exec chmod +r {} +'
+#ssh $DEVICE 'chmod -R +rx /var/opt/bosch/navdata/navigation_kor_a'
+#ssh $DEVICE 'chown -R lxc_extnav:lxc_extnav /var/opt/bosch/navdata'
+ssh $DEVICE 'sync'
+ssh $DEVICE 'mount -o remount rw /var/opt/bosch/navdata'
+ssh $DEVICE 'chown -R lxc_extnav:lxc_extnav /var/opt/bosch/navdata'
+ssh $DEVICE 'chmod -R +rx /var/opt/bosch/navdata/navigation_kor_a'
+ssh $DEVICE 'sync'
+ssh $DEVICE 'rorfs'
+ssh $DEVICE 'reboot -f'

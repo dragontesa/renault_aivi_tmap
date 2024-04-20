@@ -1,0 +1,3 @@
+#!/bin/sh
+dbus-send --bus=unix:path=/tmp/shared/iddbus/lxcdbus --print-reply --dest=net.connman / org.freedesktop.DBus.Introspectable.Introspect
+dbus-monitor --address unix:path=/tmp/shared/iddbus/lxcdbus path=/

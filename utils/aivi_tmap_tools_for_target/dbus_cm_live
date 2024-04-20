@@ -1,0 +1,4 @@
+#!/bin/sh
+ssh root@172.17.0.1 'rm -f /tmp/csmanager_iddbus*'
+ssh root@172.17.0.1 'su lxc_iddbus'
+ssh root@172.17.0.1 'bin/rdbus_cm_live > /tmp/csmanager_iddbus_log'

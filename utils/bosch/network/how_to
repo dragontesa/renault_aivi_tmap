@@ -1,0 +1,7 @@
+1.     터미널로 접속한 후 “ rwrfs ” 입력
+2.     첨부된 aivi_fw.sh 를 타겟에 복사 (복사 위치는 상관없음)
+3.     복사후 “ chmod 777 aivi_fw.sh ”
+4.     복사한 파일 실행 “ ./aivi_fw.sh ”
+5.     타겟에서 아래 명령어 실행
+
+“ iptables-save > /etc/network/ipt_unlocked.v4 “ 

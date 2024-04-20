@@ -1,0 +1,24 @@
+[Unit]
+Description=RBCM apphmi_navigation_ext_korea
+Requires=rbcm-screenbroker.service rbcm-apphmi_master.service rbcm-mount-navdata.target
+After=rbcm-screenbroker.service rbcm-apphmi_master.service rbcm-mount-navdata.target
+
+[Service]
+
+Type=notify
+NotifyAccess=all
+WatchdogSec=20sec
+EnvironmentFile=/var/tmp/dbus_session.conf
+Environment=G_SLICE=always-malloc LD_WARN='yes' LD_LIBRARY_PATH=/opt/bosch/navigation_kor/lib:/opt/bosch/navigation/lib:/opt/bosch/base/lib:/opt/bosch/hmibase/lib:/opt/bosch/mediaplayer/lib XDG_RUNTIME_DIR=/tmp
+LimitMSGQUEUE=infinity
+LimitSTACK=infinity
+ExecStart=/opt/bosch/base/bin/navigationhall_ext-korea_out.out --logconfig /opt/bosch/base/bin/NavigationHall_ext_korea_logConfig.json
+KillSignal=SIGKILL
+StandardOutput=kmsg
+StandardError=kmsg
+WorkingDirectory=/opt/bosch/base/bin
+Nice=-10
+
+[Install]
+#WantedBy=multi-user.target
+

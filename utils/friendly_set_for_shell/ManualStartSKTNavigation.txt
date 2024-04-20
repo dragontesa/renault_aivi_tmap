@@ -1,0 +1,43 @@
+
+	rwrfs
+	mv /var/lib/lxc/extnav/rootfs/etc/isoinit.d/01_extnav.service /var/lib/lxc/extnav/rootfs/etc/isoinit.d/01_extnav.service_
+	sync
+	
+	reboot
+	
+	rwrfs
+	chmod o+x /bin/bash
+	chmod o+x /bin/busybox.nosuid
+	chmod o+x /bin/su
+	rorfs
+	
+	rwrfs
+	ln -f /bin/su /var/lib/lxc/extnav/rootfs/bin/su
+	ln -f /bin/su.shadow /var/lib/lxc/extnav/rootfs/bin/su.shadow
+	ln -f /etc/alternatives/su /var/lib/lxc/extnav/rootfs/etc/alternatives/su
+	ln -f /lib/libcrypt.so.1 /var/lib/lxc/extnav/rootfs/lib/libcrypt.so.1
+	ln -f /lib/libcrypt-2.22.so /var/lib/lxc/extnav/rootfs/lib/libcrypt-2.22.so
+
+
+	ln -f /bin/ls /var/lib/lxc/extnav/rootfs/bin/ls
+	ln -f /bin/busybox.nosuid /var/lib/lxc/extnav/rootfs/bin/busybox.nosuid
+	ln -f /etc/alternatives/ls /var/lib/lxc/extnav/rootfs/etc/alternatives/ls
+	
+	lxc-attach -n extnav /bin/bash
+	su -s /bin/bash lxc_extnav
+
+	export XDG_RUNTIME_DIR=/tmp
+	export LM_SHARED_DIR=/tmp/shared/lmanager
+	export DBUS_SESSION_BUS_ADDRESS='unix:path=/tmp/shared/iddbus/lxcdbus'
+	export LD_LIBRARY_PATH=/opt/bosch/navigation_kor/lib:/opt/bosch/hmibase/lib
+	export WAYLAND_DEBUG=1
+
+	/opt/bosch/extnav/bin/thirdpartynavigation_out.out
+
+
+  display swap via process 
+ find /proc -maxdepth 2 -path "/proc/[0-9]*/status" -readable -exec awk -v FS=":" '{process[$1]=$2;sub(/^[ \t]+/,"",process[$1]);} END {if(process["VmSwap"] && process["VmSwap"] != "0 kB") printf "%10s %-30s %20s\n",process["Pid"],process["Name"],process["VmSwap"]}' '{}' \;
+
+find /proc -maxdepth 2 -path "/proc/[0-9]*/status" -readable -exec awk -v FS=":" '{process[$1]=$2;sub(/^[ \t]+/,"",process[$1]);} END {if(process["VmSwap"] && process["VmSwap"] != "0 kB") printf "%10s %-30s %20s\n",process["Pid"],process["Name"],process["VmSwap"]}' '{}' \; | awk '{print $(NF-1),$0}' | sort -h | cut -d " " -f2-
+
+find /proc -maxdepth 2 -path "/proc/[0-9]*/status" -readable -exec awk -v FS=":" '{process[$1]=$2;sub(/^[ \t]+/,"",process[$1]);} END {if(process["VmSwap"] && process["VmSwap"] != "0 kB") printf "%10s %-30s %20s\n",process["Pid"],process["Name"],process["VmSwap"]}' '{}' \; | awk '{print $(NF-1),$0}' | sort -hr | head | cut -d " " -f2- 

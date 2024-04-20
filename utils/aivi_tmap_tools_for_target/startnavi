@@ -1,0 +1,9 @@
+#!/bin/sh
+#rwrfs
+#ssh root@172.17.0.1 'mv /opt/bosch/extnav/00thirdpartynavigation_out.out /opt/bosch/extnav/thirdpartynavigation_out.out'
+#sync
+#rorfs
+ssh root@172.17.0.1 'systemctl start rbcm-lxc-extnav.service'
+ssh root@172.17.0.1 'systemctl start rbcm-navigationhall_ext_korea.service'
+ssh root@172.17.0.1 'systemctl status rbcm-navigationhall_ext_korea.service'
+ssh root@172.17.0.1 'systemctl status rbcm-lxc-extnav.service'

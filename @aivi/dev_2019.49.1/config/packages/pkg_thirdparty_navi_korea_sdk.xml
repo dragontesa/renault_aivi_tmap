@@ -1,0 +1,67 @@
+<packages>
+   <pkg> 
+	  <!--multiple pkg tags can be used so you can create one file defining multiple packages -->
+
+      <!--
+      ## package name, should only use [a-zA-Z0-9-], do not use "_" because "_" is used to separate
+      ## package name, version and arch in final ipk name...
+      -->
+      <Package> Navi-Gen3-Korea </Package>
+
+      <!-- _PROJECT_STRING was set in create_SDK.pl - script -->
+      <Version> ${_NAVI_KOREA_SDK_ROOT}/version.txt </Version>
+
+      <!--## Name of package maintainer, use FirstName LastName, do not use email addresses because XML parser gots confused...-->
+      <Maintainer> Mao Neil</Maintainer>
+
+      <!--
+      ## predefined for target, x86 for PCSIM/LSIM available, currently only "armv7a" and "x86" allowed
+      ## you might give multiple architecures separated by comma e.g. <Architecture> armv7a,x86 </Architecture>
+      -->
+      <Architecture> armv7a </Architecture>
+
+      <!--## section to group packages, e.g. Games, Bosch, Demo, ...-->
+      <Section> SK Telecom </Section>
+
+      <!--## currently default: optional, not evaluated by script-->
+      <Priority> optional </Priority>
+
+      <!--## comma separated list of dependencies (package names), version dependency in '()', e.g. "inc (>=1.0)"-->
+      <!--
+      <Depends> g3g-broadcastservice </Depends>
+      -->
+
+      <!--## URL of source package, currently not supported, leave N/A -->
+      <Source> N/A </Source>
+
+      <!--## URL of home page, currently not supported, leave N/A -->
+      <Homepage> N/A </Homepage>
+
+      <!--
+      ## list of files to put into package, environment variables from bash env are expanded automatically, e.g. ${HOME},
+      ## ${COMPILERENV} and ${MODE} are set by script
+      ##     source  = path to source file
+      ##     dest    = path of destination file (like in cp command), so copying to different file name is possible (rename)
+      ##     destdir = path to destination directory (same file name used)
+      -->
+	  
+      <files>
+		 <file source="${_NAVI_KOREA_SDK_ROOT}/version.txt" dest="/opt/bosch/navigation_kor/version.txt" />
+	  </files>
+	  
+	  
+	        <!--
+      ## folders which are handled (no recursion to subfolders), only files within that folder are copied
+      ## you can filter files by using simple filters: e.g. *.reg, *demo*.txt, ...
+      ##    source    = source folder or "NONE" which means creating empty folder with no content
+      ##      dest    = destination folder
+      ##    filter    = filter to select wanted files
+      ## recursive    = "y|n" - copy files recursively
+      -->
+      <folders>
+         <folder source="${_NAVI_KOREA_SDK_ROOT}/artefacts/lib" dest="/opt/bosch/navigation_kor/lib" filter="*" recursive="y"/>
+	 <folder source="${_NAVI_KOREA_SDK_ROOT}/artefacts/res" dest="/opt/bosch/navigation_kor/res" filter="*" recursive="y"/>
+	 <folder source="${_NAVI_KOREA_SDK_ROOT}/artefacts/bin" dest="/opt/bosch/extnav/bin" filter="*" recursive="y"/>
+      </folders>
+   </pkg>
+</packages>

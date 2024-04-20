@@ -1,0 +1,8 @@
+#!/bin/sh
+SRC=tmap_rsm2018
+SRC_PATH=/media/sf_DATA0/w0/$SRC
+rsync -arv --exclude='.git' --exclude='.git*' --exclude='.settings' --exclude='navdata' --exclude='navdata_online' --exclude='static' --exclude='dynamic' --exclude='*.pro.user*' --exclude='.project' --exclude='.cproject' --exclude='.vscode' --exclude='*.rcc' --exclude='vsmsdk/3rdparty' --exclude='vsmsdk/3rdparty/*/doc' --exclude='msdk/3rdparty/*/test' --exclude='vsmsdk/3rdparty/*/example' --exclude='*.html' --exclude='*.htm' $SRC_PATH .
+#mv $SRC $TARGET
+# --exclude='vsmsdk/build/qtcreator_vsm_sdk/prebuilt' --exclude='mnssdk' --exclude='*.a' --exclude='*.so'
+#find $SRC_PATH -not -path "$SRC_PATH/.git*" -not -path "$SRC_PATH/.settings*" -not -path "$SRC_PATH/navdata" -not -path "$SRC_PATH/navdata/*" -not -path "$SRC_PATH/dynamic" -not -path "$SRC_PATH/dynamic/*" -not -path "$SRC_PATH/static" -not -path "$SRC_PATH/static/*" -not -path "$SRC_PATH/.project" -not -path "$SRC_PATH/.cproject" -not -path "$SRC_PATH/*.pro.user*" -exec cp -ruPv '{}' ./tmap_rsm2018 '{}' \;
+

@@ -1,0 +1,12 @@
+#Gpu memory test
+How to install
+a. rename file format from piz to zip
+b. unzip the file
+c. upload it onto target
+d. opkg install rbcm-memlog_0.91.opk
+
+How to log
+a. start:  memlog -p2 /var/opt/bosch/dynamic/UC
+b. Stop: Ctl + C
+c. copy /tmp/memlog.csv onto your PC
+

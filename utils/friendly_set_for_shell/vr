@@ -1,0 +1,19 @@
+#!/bin/bash
+
+USER=$(whoami)
+
+export DBUS_SESSION_BUS_ADDRESS='unix:path=/tmp/shared/iddbus/lxcdbus'
+
+COMMAND1="/usr/bin/gdbus call -e -d App.Core.AppHmi_Navigation_Ext -o /bosch/gui/cm/ai/guicontrol -m bosch.gui.cm.ai.guicontrol.KeyForwarding '(104,1)' > /dev/null 2>&1"
+COMMAND2="/usr/bin/gdbus call -e -d App.Core.AppHmi_Navigation_Ext -o /bosch/gui/cm/ai/guicontrol -m bosch.gui.cm.ai.guicontrol.KeyForwarding '(104,0)' > /dev/null 2>&1"
+TEST="/bin/ls"
+if [ $USER = "root" ]; then
+	eval su lxc_iddbus -c \"$COMMAND1\"
+	eval su lxc_iddbus -c \"$COMMAND2\"
+fi
+
+if [ $USER = "lxc_iddbus" ]; then
+	eval $COMMAND1
+	eval $COMMAND2
+fi
+

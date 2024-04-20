@@ -1,0 +1,10 @@
+#!/bin/sh
+ssh root@172.17.0.1 'systemctl stop rbcm-navigationhall_ext_korea.service'
+ssh root@172.17.0.1 'systemctl stop rbcm-lxc-extnav.service'
+ssh root@172.17.0.1 'rwrfs'
+ssh root@172.17.0.1 'mv -f /lib/systemd/system/rbcm-navigationhall_ext_korea.service /lib/systemd/system/00rbcm-navigationhall_ext_korea.service'
+ssh root@172.17.0.1 'mv -f /opt/bosch/base/bin/navigationhall_ext-korea_out.out /opt/bosch/base/bin/00navigationhall_ext-korea_out.out'
+ssh root@172.17.0.1 'mv -f /opt/bosch/base/bin/NavigationHall_ext_korea_logConfig.json /opt/bosch/base/bin/00NavigationHall_ext_korea_logConfig.json'
+ssh root@172.17.0.1 'mv -f /opt/bosch/hmibase/lib/libhmisdkbase_so.so /opt/bosch/hmibase/lib/00libhmisdkbase_so.so'
+ssh root@172.17.0.1 'sync && reboot -f'
+

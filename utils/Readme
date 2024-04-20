@@ -1,0 +1,26 @@
+Linux container ID Dbus 테스트 명령어
+su lxc_iddbus 
+
+1. rdbus_cm_status 
+ Connman DBus Service 상태 확인
+2. rdbus_cm_call [InterfaceName.Method] [Param]
+ Connman Service 인터페이스 메소드 call 테스트 
+
+3. rdbus_navi_status
+  Navigation Service Dbus 서비스 상태 확인
+4. rdbus_navi_call
+  Navigation Service Dbus 인터페이스 메소드 call 테스트
+
+5. rdbus_naviext_status
+  Navigation Hall Ext DBus 서비스 상태 확인
+
+6. rdbus_naviext_call
+  Navigation Hall Ext DBus 인터페이스 메소드 call 테스트
+
+
+
+시스템 네비게이션 서비스 Shutdown
+7. rdbus_disable_global_navi
+
+
+

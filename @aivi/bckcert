@@ -1,0 +1,15 @@
+#!/bin/sh
+if [ ! $# -gt 0 ]; then
+	echo "type path to backup"
+	exit
+fi
+BCK_PATH=$1
+if [ ! -d $BCK_PATH ]; then
+	mkdir -p $BCK_PATH
+fi
+# scp -r root@172.17.0.1:/var/opt/bosch/persistent $BCK_PATH
+ssh root@172.17.0.1 'rwrfs'
+ssh root@172.17.0.1 'cd /var/opt/bosch && tar czfv bck_aivi_bosch_persistent.tar.gz persistent'
+ssh root@172.17.0.1 'sync'
+ssh root@172.17.0.1 'rorfs'
+scp root@172.17.0.1:/var/opt/bosch/bck_aivi_bosch_persistent.tar.gz $BCK_PATH

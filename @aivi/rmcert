@@ -1,0 +1,5 @@
+#!/bin/sh
+ssh root@172.17.0.1 'rwrfs'
+ssh root@172.17.0.1 'rm -rf /var/opt/bosch/persistent/*' 
+ssh root@172.17.0.1 'sync && rorfs'
+ssh root@172.17.0.1 'reboot -f'

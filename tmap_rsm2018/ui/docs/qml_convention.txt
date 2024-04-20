@@ -1,0 +1,34 @@
+﻿1. QML Component
+
+	view 이하 화면들에서 재사용되는 컴포넌트만을 유지
+
+	1) 작성 원칙
+
+		- 화면 카테고리(search, route, setting등)를 기준으로 최소 두 카테고리 이상에서 사용되는 컴포넌트만 ui/qml/component에 포함시킨다
+		* 업무 로직이나 특정 화면 유형에 종속되지 않는 Button이나 CheckBox와 같은 일반적인 유형에 해당.
+
+	2) Naming
+
+		- T로 시작, 이후 Pascal case 적용
+			* 대문자 약자도 Pascal case 적용
+				ex) QMLComponent => QmlComponent
+		- 내부적으로 사용되는 컴포넌트는 T없이 component/internal에 유지
+
+2. QML View
+
+	view 이하 서브폴더에 분류하여 유지.
+
+	1) 작성 원칙
+	
+		View 또는 PopupView를 상속하고 C++ Mediator와 연결
+
+	2) Naming
+	
+		T없이 이름 끝에 View를 붙임
+			???View
+		View 또는 PopupView를 상속하지 않는 경우 이름 끝에 View를 사용하지 않아야 함
+
+
+
+		
+

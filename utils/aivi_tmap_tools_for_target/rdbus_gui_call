@@ -1,0 +1,10 @@
+#!/bin/sh
+if [ ! $# -gt 0 ]; then
+	echo "type method to call and it would need parameter"
+	exit
+fi
+
+FNC=$1
+PARAM=$2
+dbus-send --bus=unix:path=/tmp/shared/iddbus/lxcdbus --type=method_call --print-reply --dest=App.Core.AppHmi_Navigation_Ext /bosch/gui/cm/ai/guicontrol bosch.gui.cm.ai.guicontrol.$FNC $PARAM
+exit

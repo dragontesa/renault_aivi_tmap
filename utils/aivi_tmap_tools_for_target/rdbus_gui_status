@@ -1,0 +1,2 @@
+#!/bin/sh
+dbus-send --bus=unix:path=/tmp/shared/iddbus/lxcdbus --print-reply --dest=App.Core.AppHmi_Navigation_Ext /bosch/gui/cm/ai/guicontrol org.freedesktop.DBus.Introspectable.Introspect

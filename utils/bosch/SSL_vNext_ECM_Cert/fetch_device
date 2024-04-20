@@ -1,0 +1,7 @@
+#!/bin/sh
+ssh root@172.17.0.1 'rwrfs'
+scp data_fetch.zip root@172.17.0.1:/home/root
+ssh root@172.17.0.1 'unzip data_fetch.zip -d data_fetch'
+ssh root@172.17.0.1 'chmod 750 data_fetch/*'
+ssh root@172.17.0.1 'sync'
+ssh root@172.17.0.1

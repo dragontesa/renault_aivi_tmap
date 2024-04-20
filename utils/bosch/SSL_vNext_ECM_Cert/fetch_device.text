@@ -1,0 +1,34 @@
+Script to DUMP KDS values for certain config items
+[33m-- IVI_Id -- [0m
+ECUSerialNumber 0000036 ASCII 
+NavUnitID 0F000010 ASCII 
+[33m
+-- Hardware Ref --[0m
+CustomerRefA 285J9xxxxR ASCII 
+[33m
+-- Part Number Ref --[0m
+CustomerECUPartNumber TST1382799 ASCII 
+[33m
+-- SW_Version --[0m
+CustomerrSWVersion 1160_180810 ASCII 
+[33m
+-- FCID --[0m
+SWUPD_VariantInfo  01 00 00 00 c0 00 00 00 00 00 00 00 00 00 00 00 HEX 
+FCID is: 00 00 00 c0
+[33m
+-- Region --[0m
+[31mERR : Config Item not specified[0m
+[33m
+-- IVI brand --[0m
+CMVariantCoding  00 00 00 08 06 34 03 00 02 03 31 00 02 00 55 1a 09 03 02 02 00 00 01 01 04 00 00 00 00 00 00 00 HEX 
+Renault
+OEMType 08 HEX 
+Brand is: Renault[33m
+-- ProductLine --[0m
+VariantSelection 1 DEC
+Device is: Navi
+SystemTypeSelector 1 DEC
+ProductLine: MID
+[33m
+-- MapComponentd --[0m
+[31mERR : TomTomComponentID doesnt exist in dpIfKdsKeyValueAccess[0m

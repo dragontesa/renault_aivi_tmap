@@ -1,0 +1,10 @@
+#!/bin/sh
+if [ ! $# -gt 0 ]; then
+	echo "type method to call and it would need parameter"
+	exit
+fi
+
+eval `cat /tmp/dbus_session.conf`; export DBUS_SESSION_BUS_ADDRESS
+FNC=$1
+PARAM=$2
+gdbus call --session --dest App.Core.AppHmi_Navigation --object-path /com/bosch/cm/ai/navigation --timeout 2 --method org.bosch.cm.navigation.NavigationService.$FNC $PARAM

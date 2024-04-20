@@ -1,0 +1,165 @@
+1.	Rsmserver.duckdns.org:8080 에 접속
+2.	중앙 하단에 tmap_rsm2018_release 
+3.	Build with parameters 를 누르고 태그 (git 에 있는 그대로 )  v0.4.2 을 입력 .
+4.	태그명 밑에 빌드 하기 를 누른다. 
+5.	빌드가 끝나면 valley에 파일릴리즈에 자동으로 등록 됨.  Download 받고 나서 
+6.	단말에서 테스트 
+A.	$ scp tmap_release_0.3.1-ef02528.tar.gz root@172.17.0.1:/root/   	: 단말에 복사
+B.	$ ssh root@172.17.0.1                                     	: 단말로 접속
+C.	# systemctl stop rbcm-navigationhall_ext_korea.service          	: 기존 실행하고 있는것 중지 
+D.	# cd /opt/bosch/thirdpartynavigation/				: 해당 폴더로 이동
+E.	# rm -rf lib res							: 기존 데이터 삭제
+F.	# tar -zxf /root/tmap_release_0.3.1-ef02528.tar.gz			:  tar 압축 해제
+G.	# sync								:  sync 
+
+		Reboot 하면 자동 실행됨 
+
+		Sftp 에 upload 하는 파일들 
+
+		Map data ( 압축하여 3개 올림, vsm, local, cross image  + 맵 데이터 자동 압축 푸는 shell script ) 
+		릴리즈 배포 파일 tmap_release_0.3.1… gz 
+		릴리즈 노트.pdf 
+
+
+rwrfs
+mount -o remount,rw /var/opt/bosch/navdata
+systemctl start rbcm-navigationhall_ext_korea.service
+
+
+1. Chrome : Jenkins 접속 
+
+2. login : sh.je@sk.com, passwd xewh2624 입력 
+
+3. tmap_rsm2018_release 선택
+
+4. Build with parameters 
+		tagName : v0.4.5
+		releaseDate : dev_2017.20.3
+
+5. 단말에 접속 
+
+	root@MYCAR:/home# rwrfs
+	
+	root@MYCAR:/home# ls
+	adit-service                       tmap_release_0.4.5-e324ec4.tar.gz
+	root
+
+	root@MYCAR:/home# tar -zxf tmap_release_0.4.5-e324ec4.tar.gz
+	root@MYCAR:/home# ls
+	adit-service                       root
+	dev_2017.20.3                      tmap_release_0.4.5-e324ec4.tar.gz
+ 
+	root@MYCAR:/home# cd dev_2017.20.3/
+	
+	root@MYCAR:/home/dev_2017.20.3# ls
+	artefacts    config       version.txt
+
+	root@MYCAR:/home/dev_2017.20.3# cd artefacts/
+	
+	root@MYCAR:/home/dev_2017.20.3/artefacts# ls
+	include  lib      res
+
+	root@MYCAR:/home/dev_2017.20.3/artefacts# mv lib res include /opt/bosch/navigation_kor/
+
+	root@MYCAR:/home/dev_2017.20.3/artefacts# cd ..
+	root@MYCAR:/home/dev_2017.20.3# ls
+	artefacts    config       version.txt
+
+	root@MYCAR:/home/dev_2017.20.3# mv config /opt/bosch/navigation_kor/
+	root@MYCAR:/home/dev_2017.20.3# cp version.txt /opt/bosch/navigation_kor/
+	root@MYCAR:/home/dev_2017.20.3# cd /opt/bosch/navigation_kor/
+	root@MYCAR:/opt/bosch/navigation_kor# ls
+	config       include      lib          res          version.txt
+
+	root@MYCAR:/opt/bosch/navigation_kor# sync
+	
+	root@MYCAR:/opt/bosch/navigation_kor# rm -rf /var/opt/bosch/dynamic/navigation_kor/*
+	root@MYCAR:/opt/bosch/navigation_kor# sync
+	root@MYCAR:/opt/bosch/navigation_kor#
+
+
+
+	root@MYCAR:~# systemctl start rbcm-navigationhall_ext_korea_test.service
+	root@MYCAR:~#
+
+	
+	
+	systemctl stop rbcm-navigationhall_ext_korea_test.service
+	systemctl start rbcm-navigationhall_ext_korea_test.service
+	LayerManagerControl set surface 94 visibility 0
+
+
+
+6. valley 에 접속 
+ 
+ tag 확인 방법 
+    T map for Car (Embedded) / Source Code / Tmap_rsm2018 / 변경 
+ 
+ 파일 릴리즈 / RSM2018 software release / sw5_3 / tmap
+
+
+
+//단말연결
+$ssh root@172.17.0.1 
+
+//읽기쓰기
+#rwrfs
+
+//실행중인 네비 종료
+#systemctl stop rbcm-navigationhall_ext_korea.service 
+
+//빠져나오기
+#exit 
+
+//수정한 라이브러리 업로드
+$scp /home/thirdpartydev/Downloads/libthirdpartynavigation_so.so root@172.17.0.1:/opt/bosch/navigation_kor/lib
+
+$scp /home/thirdpartydev/Downloads/l											
+																																																	`ibmnssdk.so root@172.17.0.1:/opt/bosch/navigation_kor/lib  
+
+//단말연결
+$ssh root@172.17.0.1 
+
+//업로드 한 라이브러리 적용
+#sync 
+
+단말 RST SCC 토글 10초 정도 후 WAKE UP 토글 
+(안되면 파워 종료 후 WAKE UP 토글)
+
+//단말연결
+$ssh root@172.17.0.1 
+
+//읽기쓰기
+#rwrfs
+
+//화면 안나오면 수동으로 화면 전환.
+LayerManagerControl set screen 1 render order 6003
+LayerManagerControl set surface 103 visibility 1
+
+systemctl status rbcm-navigationhall_ext_korea.service
+
+
+//gps location
+/var/opt/bosch/dynamic/navigation_kor/gps
+
+//file copy
+
+scp -r Downloads/MapData/SW5/vsm_map_data_20170717A/vsm/ root@172.17.0.1:/var/opt/bosch/navdata/navigation_kor_a/mapdata/
+scp -r Downloads/MapData/SW5/local_map_data_20170718/TmapNavi/ root@172.17.0.1:/var/opt/bosch/navdata/navigation_kor_a/mapdata/
+scp -r Downloads/MapData/SW5/crossimage/ root@172.17.0.1:/var/opt/bosch/navdata/navigation_kor_a/mapdata/
+
+scp -r Downloads/20170728/tmap_release_0.5.4-332e788/dev_2017.30.5/artefacts/res/ root@172.17.0.1:/opt/bosch/navigation_kor/
+scp -r Downloads/20170728/tmap_release_0.5.4-332e788/dev_2017.30.5/artefacts/lib/ root@172.17.0.1:/opt/bosch/navigation_kor/
+
+
+1. 기존 폴더 삭제 하고 
+
+rm -rf /var/opt/bosch/dynamic/navigation_kor/*
+
+cat /opt/bosch/cc_label.txt
+
+ find /usr/lib/ | grep curl
+ 
+ 
+ 
+ 1. navigationExtAgent 와 adaptor 관계. 

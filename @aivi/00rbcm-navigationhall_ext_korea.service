@@ -1,0 +1,35 @@
+# created by MAO Neil (CM/ESW21-CN)
+# refer usage of systemd in G3g system startup: https://inside-wiki.bosch.com/confluence/display/gen3generic/Use+of+systemd+for+applications+and+services
+# original file /nincg3/ai_thirdparty_navi/products/NINCG3/Apps/korea/ProcessStartup/StartupScripts/rbcm-navigationhall_ext_korea.service
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+##############################################
+
+[Unit]
+Description=RBCM apphmi_navigation_ext_korea
+Requires=rbcm-screenbroker.service rbcm-apphmi_master.service rbcm-mount-navdata.target
+After=rbcm-screenbroker.service rbcm-apphmi_master.service rbcm-mount-navdata.target
+
+[Service]
+
+Type=notify
+NotifyAccess=all
+WatchdogSec=20sec
+EnvironmentFile=/var/tmp/dbus_session.conf
+Environment=G_SLICE=always-malloc LD_WARN='yes' LD_LIBRARY_PATH=/opt/bosch/navigation_kor/lib:/opt/bosch/navigation/lib:/opt/bosch/base/lib:/opt/bosch/hmibase/lib:/opt/bosch/mediaplayer/lib XDG_RUNTIME_DIR=/tmp
+LimitMSGQUEUE=infinity
+LimitSTACK=infinity
+ExecStart=/opt/bosch/base/bin/navigationhall_ext-korea_out.out --logconfig /opt/bosch/base/bin/NavigationHall_ext_korea_logConfig.json
+KillSignal=SIGKILL
+StandardOutput=kmsg
+StandardError=kmsg
+WorkingDirectory=/opt/bosch/base/bin
+Nice=-10
+
+[Install]
+#WantedBy=multi-user.target
+

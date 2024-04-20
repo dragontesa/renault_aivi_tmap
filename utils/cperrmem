@@ -1,0 +1,14 @@
+#!/bin/sh
+if [ ! $# -gt 0 ]; then
+	echo "specify path to download !!"
+	exit
+fi
+
+PATH_TO_DOWNLOAD=$1
+ssh root@172.17.0.1 'strings /var/opt/bosch/persistent/errmem > /tmp/errmem_log'
+tag=$(date +'%Y%m%d_%H%M%S')
+scp root@172.17.0.1:/tmp/errmem_log $PATH_TO_DOWNLOAD/errmem_$tag
+ssh root@172.17.0.1 'rwrfs'
+ssh root@172.17.0.1 'rm -f /var/opt/bosch/persistent/errmem'
+ssh root@172.17.0.1 'sync'
+ssh root@172.17.0.1 'rorfs'

@@ -1,0 +1,2 @@
+#!/bin/sh
+dbus-monitor --address unix:path=/tmp/shared/iddbus/lxcdbus path=/com/bosch/cm/ai/navigation/ext

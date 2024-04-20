@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="introspect.xsd" name="bosch.cm.ai.nissan.hmi.zoneDataService">
+  <interface name="bosch.cm.ai.nissan.hmi.zoneDataService.HMIZoneData">
+    <property access="read" name="Zone3PullUpListState" type="u"/>
+    <method name="setZone1">
+      <arg direction="in" name="appId" type="y">
+        <doc>
+          <line>appId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="zone1Info" type="(ua(u(suuuu)usua(usb)(uy)uudu(dsddybu)ubbbbnnb)b)">
+        <doc>
+          <line>zone1Info = Description missing</line>
+        </doc>
+      </arg>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="Zone1InfoHolder" />
+    </method>
+    <method name="setZone3">
+      <arg direction="in" name="appId" type="y">
+        <doc>
+          <line>appId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="zone3Info" type="(ua(u(suuuu)usua(usb)(uy)uudu(dsddybu)ubbbbnnb)b)">
+        <doc>
+          <line>zone3Info = Description missing</line>
+        </doc>
+      </arg>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="Zone3InfoHolder" />
+    </method>
+    <method name="setKeyboard">
+      <arg direction="in" name="appId" type="y">
+        <doc>
+          <line>appId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="keyboardType" type="y">
+        <doc>
+          <line>keyboardType = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="validCharacters" type="s">
+        <doc>
+          <line>validCharacters = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setEditfieldText">
+      <arg direction="in" name="appId" type="y">
+        <doc>
+          <line>appId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="searchBarText" type="s">
+        <doc>
+          <line>searchBarText = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="isHighLightRequired" type="b">
+        <doc>
+          <line>isHighLightRequired = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="highlightStartIndex" type="y">
+        <doc>
+          <line>highlightStartIndex = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="highlightCount" type="y">
+        <doc>
+          <line>highlightCount = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setZoneVisibility">
+      <arg direction="in" name="appId" type="y">
+        <doc>
+          <line>appId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="visibilityState" type="b">
+        <doc>
+          <line>visibilityState = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="displayRegionType" type="y">
+        <doc>
+          <line>displayRegionType = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setZone3SubTextInfo">
+      <arg direction="in" name="zone3SubText" type="as">
+        <doc>
+          <line>zone3SubText = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setKeyBoardKeyStatus">
+      <arg direction="in" name="keyID" type="s">
+        <doc>
+          <line>keyID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="keyState" type="i">
+        <doc>
+          <line>keyState = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setZone3PullUpListState">
+      <arg direction="in" name="zone3PullUpListState" type="u">
+        <doc>
+          <line>zone3PullUpListState (of type PullUpListStatus) = Description missing</line>
+          <line>enum[CLOSED (0), OPEN (null)]</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setEditFieldUpdate">
+      <arg direction="in" name="appId" type="y">
+        <doc>
+          <line>appId = The application ID, for navigation, the ID is 3 in AIVI project.</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="cursorPosition" type="y">
+        <doc>
+          <line>cursorPosition = Cursor position of zone2 edit field.</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="searchbarText" type="s">
+        <doc>
+          <line>searchbarText = String currently displayed on edit field.</line>
+        </doc>
+      </arg>
+    </method>
+    <signal name="keyboardKeyPressed">
+      <arg direction="out" name="appId" type="y">
+        <doc>
+          <line>appId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="searchbarText" type="s">
+        <doc>
+          <line>searchbarText = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="keyPressed" type="s">
+        <doc>
+          <line>keyPressed = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="IsCtrlKey" type="b">
+        <doc>
+          <line>IsCtrlKey = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="IsSpeedLockActive" type="b">
+        <doc>
+          <line>IsSpeedLockActive = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="keyboardInputFinished">
+      <arg direction="out" name="appId" type="y">
+        <doc>
+          <line>appId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="searchbarText" type="s">
+        <doc>
+          <line>searchbarText = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="buttonPressed">
+      <arg direction="out" name="appId" type="y">
+        <doc>
+          <line>appId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="buttonId" type="u">
+        <doc>
+          <line>buttonId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="buttonState" type="y">
+        <doc>
+          <line>buttonState = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="pullupButtonPressed">
+      <arg direction="out" name="appId" type="y">
+        <doc>
+          <line>appId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="buttonId" type="y">
+        <doc>
+          <line>buttonId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="buttonState" type="y">
+        <doc>
+          <line>buttonState = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="togglePressed">
+      <arg direction="out" name="appId" type="y">
+        <doc>
+          <line>appId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="buttonId" type="u">
+        <doc>
+          <line>buttonId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="buttonState" type="y">
+        <doc>
+          <line>buttonState = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="toggleValue" type="b">
+        <doc>
+          <line>toggleValue = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="ActiveNotificationType">
+      <arg direction="out" name="activeNotification" type="u">
+        <doc>
+          <line>activeNotification = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="shiftKeyOnEntry">
+      <arg direction="out" name="appId" type="y">
+        <doc>
+          <line>appId = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+  </interface>
+</node>

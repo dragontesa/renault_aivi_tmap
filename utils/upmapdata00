@@ -1,0 +1,25 @@
+#!/bin/sh
+if [ ! $# -gt 0 ]; then
+	echo "type mapdata path to update"
+exit
+fi
+DST_HOST=root@172.17.0.1
+FROM=$1
+TO=/var/opt/bosch/navdata/navigation_kor_a
+ssh $DST_HOST 'systemctl stop rbcm-lxc-extnav'
+ssh $DST_HOST 'systemctl stop rbcm-navigationhall_ext_korea'
+ssh $DST_HOST 'rwrfs'
+ssh $DST_HOST "cd $TO && mv -f mapdata mapdata.bck && sync" 
+scp -r $FROM/tmap $DST_HOST:$TO
+ssh $DST_HOST "mv $TO/tmap $TO/mapdata && sync"
+
+# set persmission for lxc_extnav
+ssh $DST_HOST "chmod 755 $TO/.." ## for navdata
+ssh $DST_HOST "chown -R lxc_extnav:lxc_extnav $TO/.."
+ssh $DST_HOST "find $TO -type d -exec chmod 755 {} +"
+ssh $DST_HOST "find $TO -type f -exec chmod +r {} +"
+ssh $DST_HOST "chmod +rx $TO/mapdata/vsm/resource_root/100/*"
+ssh $DST_HOST 'sync'
+ssh $DST_HOST 'rorfs'
+ssh $DST_HOST "cat $TO/mapdata/TmapNavi/Map/sklocalmap.dat"
+ssh $DST_HOST 'reboot -f'

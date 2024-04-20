@@ -1,0 +1,685 @@
+#!/bin/bash
+#
+# Script to log memory use of all running processes and some system wide values.
+# 
+# Usage:
+#   memlog.sh will start logging. On SIGTERM (CTRL-C) logging will be stoped 
+#   and a logfile writen. Please check the options in help (-h)
+# 
+# Depends: memeat (opt.), sumSmap (opt.)
+#  
+# Todo:
+#   - use always arrays instead of string concates
+#       - configuration in one place (e.g. printout array) ( instead of capture and print)
+#
+# History:
+#   151101, weo2hi, first version
+#   151204, mka2hi, added gpu, dma
+#   151214, 0.5, mka2hi, added page in/out, fixed issues
+#   160119, 0.6, mka2hi, added support for memeat, added swapin/out, added script ver to output, 
+#                        renamed as memDelta to memlog, fixed gmem pid issue, added dynamic gmem,
+#                        added MemTotal, VMSize, VmSwap, added uptime, all values in kB
+#   160126, 0.7, mka2hi, added gmemfree, removed swaptotal from cyclic,
+#   160217, 0.8, mka2hi, use sumSmap, remove VMSize as not needed, SIGINT will quit gracefully, 
+#                        add option to save immediately
+#   160318, 0.9, mka2hi, add support for new gpu driver, add optRSS
+#   160518, 1.0, mka2hi, add increasing filenames, profiles, removed optRSS
+#   160523, 1.1, mka2hi, fixed gmemprofile 2 issue
+#   160527, 1.2, mka2hi, added save to tmp and rename to avoid lost logs at reset
+#   160621, 1.3, mka2hi, fixed bug where profile 3 does not work with sumSmaps
+#   160623, 1.4, mka2hi, added -c to record cpu usage during logging
+#   160727, 1.5, mka2hi, extended memeater to be started on CTRL-C, prefix new pids with zeros, 
+#                        switch from date to /proc/uptime
+#   160803, 1.6, mka2hi, fixed issue that only data for pids available during saving is taken into account.
+#                       fixed issue with script version on import to excel, added system load as opt, run endless (instead of 999) by default
+#   180122  1.7 bce2hi  add analysis of tmpfs, shmem can be used for additianal usage  
+#   180508  1.8 bce2hi  add cpu load for each pid from /proc/<pid>/stat
+#   180508  1.9 bce2hi  add virtual Memory recording for -p1
+
+
+VER="1,9"
+optImmediateSave=false
+optGmemExt=false
+optCpuUse=false
+optSysLoad=false
+numSamples=-1
+round=0
+delay=10
+eatmem=0                        # kB of RAM to eat per cycle
+eatmemrun=false                 # eatmem running?
+MEMEATPID=0
+MEMEATBIN="/usr/local/bin/memeat"
+logfile=/tmp/$(basename $0)                     # default logfile is scripname
+log_ext=csv
+pmemprofile=1
+gmemprofile=1
+
+function showUsage() {
+cat << EOF
+memlog ${VER}
+Record memory usage of processes and system over time.
+By default, the log is stored in RAM based filesystem (/tmp). Logfile will get an incremental number, if there already one with same name.
+If a Videantis GPU is detected, the graphic memory can be logged as well.
+Recording can be stopped by pressing CTRL-C. If the memeat is enabled (-e) first CTRL-C will start memeater and second will stop memlog.
+
+OPTIONS:
+
+-n              number of samples to record. '-1' for endless. [Default: ${numSamples}]
+-d              amount of delay in seconds between samples. [Default: ${delay}]
+-e SIZE         eat up SIZE kB of mem within each cycle. This will be started by CTRL-C. Second CTRL-C will stop memlog.[Default: 0kB]
+-f PATHNAME     Name and path for logife ('.csv' will be postfixed). Ensure write permission. [Default: '${logfile}.csv']
+-i              Save log immediately. Will help in case of reset. Take care on write cycles!
+-c              record CPU usage data (0-100%, average on cycle time)
+-l              Record system load
+-p NUM          Use process memory profile NUM. The profile defines the data to be logged. [Default: ${pmemprofile}]
+                0: no process data logged. Log only system data
+                1: record RSS of each process
+                2: record PSS of each process (needs more CPU)
+                3: record PSS and further data like dirty, anonymous, ...
+-g NUM          Use graphic memory profile NUM. the profile defines the data to be logged. [Default: ${gmemprofile}]
+                1: Record overall gmem used by processes
+                2: record extended gmem values like texture, rt, depth,bitmap
+EOF
+}
+
+# trap for ctrl-c / SIGINT, to stop recording
+trap doStop SIGINT
+function doStop 
+{
+    if [ "$eatmem" -gt 0 -a "$eatmemrun" = false ]; then
+        echo "Got SIGINT, enable memeater ..."
+        eatmemrun=true
+        return
+    fi
+    echo "Got SIGINT, will stop recording ..."
+    run=false;
+}
+
+# This function will echo a relative time stamp compared to previous call
+# On first call, the absolute timestamp is stored.
+function getRelTimeS
+{
+    _up=$(cat /proc/uptime)
+    _now=${_up%%.*}       # delet everything from first '.'
+    if [ -z ${START_TIME} ]; then
+        START_TIME=${_now}
+        return
+    fi
+    echo "$((_now-START_TIME))"
+}
+
+# this function will echo he side of the tempfs
+function getTempFs
+{
+   # tmp=`df /tmp | tail -1 | awk '{print $3}'`
+   tmp=`df /tmp | tail -1 | tr -s ' ' | cut -f3 -d ' '`
+   echo "${tmp}"
+} 
+
+
+# Function to calculate overall CPU consumption as percent value.
+# The time between the current and the last call is used for calc.
+# CPUUSE is a global array. The first value contains the percentage. The other two
+# are used to save values between calls to doCalCpuUse()
+declare -a CPUUSE=( 0 0 0 )
+function doCalcCpuUse {
+    # fetch cpu jiffies from procstat to an array and sum all 'use' and 'idle'
+    _dat=($(head -n1 /proc/stat))
+    _use=$(( _dat[1] + _dat[2] + _dat[3] + _dat[5] + _dat[6] + _dat[7] ))
+    _idle=${_dat[4]}
+    # calc percentage by using values from previous call
+    # 100*(u-u_old) / (u-u_old + (i - i_old)
+    _u=$(( _use - CPUUSE[1] ))
+    _i=$(( _idle - CPUUSE[2] ))
+    _perc=$(( 100*_u / (_u + _i) ))
+    # store values in gloabl array
+    CPUUSE=( ${_perc} ${_use} ${_idle} )
+    # echo "doCalcCpuUsage: cpuusage=${cpuusage[@]}"
+}
+
+function doCalcPidCpuUse {  
+ 
+    _file="/proc/$1/stat"
+    _tmp=`cat ${_file} | cut -f1,2,14,15 -d ' '`
+    set -- $_tmp
+    _user=$(($3 + $4))
+    ar_cpu[$1]=$(csvConcat "${ar_cpu[$1]}" "${_user}" ) 
+
+}
+
+
+# sum up each value in smaps and return them as variables
+# function getProcSmaps 
+# {
+#     awk '/.*: /{ v[$1]+=$2 } END { for(x in v) print substr(x,0,length(x)-1) "="  v[x] }' /proc/$1/smaps 2>/dev/null
+# }
+
+
+# fetch a value from /prco/meminfo
+function getProcMeminfo 
+{
+    tmp=`cat /proc/meminfo | grep -w ${1} | tr -s ' ' | cut -f2 -d ' '`
+    echo "${tmp}"
+}
+
+function getProcVmstat
+{
+    tmp=`cat /proc/vmstat | grep -w ${1} | cut -f2 -d' '`
+    echo "${tmp}"
+}
+
+# Concatenate two strings ($1 and $2) with ';'. Will take care if first is empty 
+function csvConcat
+{
+    if [ -z "$1" ]; then
+        # we got an empty string -> this is a new pid.
+        if [ $round -eq 0 ]; then
+            # first round. No need to prefix zeros
+            echo "$2"
+        else
+            # we alreeady recorded some round. Prefix new pid with zeros
+            _tmp=0
+            for ((i=1; i<${round}; ++i)); do
+                _tmp="$_tmp;0"
+            done
+            # and add new data
+            _tmp="$_tmp;$2"
+            # echo "NEW (round=$round): ${_tmp}" > /dev/stderr
+            echo "${_tmp}"
+        fi
+    else
+        # this is a known pid. Just add new data
+        echo "$1;$2"
+    fi
+}
+
+# ar_pids=      # array containing all 'seen' processes. index is pid, value is name of process
+# iter over current available processes. Exclude kernel threads
+function forAllProcesses 
+{
+    n=0
+    for pid in $(find /proc/[0-9]* -maxdepth 0 -type d)
+    do
+        pid=${pid:6:100}
+        # go only for userland pids. For kthreads we'll get no data 
+        if [ -e /proc/$pid/exe ]
+        then
+            n=$((n+1))
+            if [ -z ${ar_pids[$pid]} ]; then
+                # this is a new pid. mark as 'seen' and save name
+                ar_pids[$pid]=$(cat /proc/$pid/comm)
+            fi
+            eval $1 $pid
+        fi
+    done
+}
+
+# ar_pss=
+# ar_dirty=
+# ar_gmem=
+# ar_gpids=()
+# ar_cpu
+function recProcData 
+{
+    pid=$1
+    doCalcPidCpuUse ${pid}
+   
+    if [ ${pmemprofile} -eq 1 ]; then
+        # Read /proc/PID/status and export some content to variables.
+        if [ -e "/proc/${pid}/status" ]; then
+            while read line; do
+                tmp=(${line})
+                # echo "DBG: ${tmp[0]%?} -> ${tmp[1]}"
+                #take variable name from array, remove last char (:) and export with value
+                export "${tmp[0]%?}"=${tmp[1]}
+            done < <(cat /proc/${pid}/status | grep ^Vm)
+        fi
+        ar_VmSize[${pid}]=$(csvConcat "${ar_VmSize[${pid}]}" "$VmSize" )
+        ar_VmSwap[${pid}]=$(csvConcat "${ar_VmSwap[${pid}]}" "$VmSwap" )
+        ar_VmRSS[${pid}]=$(csvConcat "${ar_VmRSS[${pid}]}" "$VmRSS" )
+
+    elif [ ${pmemprofile} -gt 1 ]; then
+        if [ -e /proc/$pid/smaps ]; then
+            if ${withSumSmap}; then
+                # use faster sumSmap for summing
+                smaps=( $(/usr/local/bin/sumSmap ${pid}) )
+                ar_pss[${pid}]=$(csvConcat "${ar_pss[$pid]}" "${smaps[0]}" )
+                ar_swap[${pid}]=$(csvConcat "${ar_swap[$pid]}" "${smaps[3]}" )
+                if [ ${pmemprofile} -gt 2 ]; then
+                    ar_dirty[${pid}]=$(csvConcat "${ar_dirty[${pid}]}" "${smaps[1]}")
+                    ar_anon[${pid}]=$(csvConcat "${ar_anon[${pid}]}" "${smaps[2]}")
+                    filebacked=$((smaps[0]-smaps[2]))
+                    ar_filebacked[${pid}]=$(csvConcat "${ar_filebacked[${pid}]}" "$filebacked" )
+                fi
+
+            else
+                # use awk for summing
+                eval $(
+                awk '/.*: /{ v[$1]+=$2 } END { for(x in v) print substr(x,0,length(x)-1) "="  v[x] }' /proc/$pid/smaps 2>/dev/null)
+                # eval $(getProcSmaps $pid)
+                # ToDo: will fail if proc comes alive during measurement as it will be added in front
+                # check if pid is already known. If, add as below, if not, add amount of cycles of zeros
+                ar_pss[${pid}]=$(csvConcat "${ar_pss[$pid]}" "$Pss" )
+                ar_swap[${pid}]=$(csvConcat "${ar_swap[$pid]}" "$Swap" )
+                if [ ${pmemprofile} -gt 2 ]; then
+                    ar_dirty[${pid}]=$(csvConcat "${ar_dirty[${pid}]}" "$Private_Dirty" )
+                    ar_anon[${pid}]=$(csvConcat "${ar_anon[${pid}]}" "$Anonymous" )
+                    filebacked=$((Pss - Anonymous))
+                    ar_filebacked[${pid}]=$(csvConcat "${ar_filebacked[${pid}]}" "$filebacked" )
+                fi
+            fi
+        fi
+    fi
+    if [ ${gmemprofile} -gt 0 ];then
+        if [[ " ${ar_gpids[@]} " =~ " ${pid} " ]]; then
+            if [ $gpudrv -eq 1 ]; then
+                echo ${pid} > /sys/kernel/debug/gpu/vidmem
+                # grep data, read in as line and convert to array 
+                line=( $(cat /sys/kernel/debug/gpu/vidmem | grep "^Current" ) )
+            elif [ $gpudrv -eq 2 ]; then
+                echo ${pid} > /sys/kernel/debug/gc/vidmem
+                # grep data, read in as line and convert to array 
+                line=( $(cat /sys/kernel/debug/gc/vidmem | grep "^Current" | head -n1) )
+            fi
+            # Summ of all results in All.
+            # Index: All #1, Texture #4, RT #5, Depth #6, Bitmap #7, TS #8
+            # echo "All=${line[1]}, Texture=${line[4]}, RT=${line[5]}, Depth=${line[6]}, Bitmap=${line[7]}, TS=${line[8]}"
+            line[1]=$((line[1]/1024))
+            ar_gmem[${pid}]=$(csvConcat "${ar_gmem[${pid}]}" "${line[1]}" )
+            if [ ${gmemprofile} -gt 1 ]; then
+                ar_gtexture[${pid}]=$(csvConcat "${ar_gtexture[${pid}]}" "${line[4]}" )
+                ar_grt[${pid}]=$(csvConcat "${ar_grt[${pid}]}" "${line[5]}" )
+                ar_gdepth[${pid}]=$(csvConcat "${ar_gdepth[${pid}]}" "${line[6]}" )
+                ar_gbitmap[${pid}]=$(csvConcat "${ar_gbitmap[${pid}]}" "${line[7]}" )
+            fi
+        fi
+    fi
+}
+
+# ar_dmapool=     # array with dma pool names
+# ar_dmafree=     # array with dma pool free values in kB
+# meminfo= 
+# cached=
+# tmpfssize=      # used mem for tmpfs
+# swapfree=       # free swap
+# swaptotal=      # total amount of swap. May increase over time
+# tstamps=        # time stamps
+function recSystemData 
+{    
+    tstamps=$(csvConcat "$tstamps" $(getRelTimeS))
+    tmpfssize=$(csvConcat "$tmpfssize" $(getTempFs))
+    memfree=$(csvConcat "$memfree" $(getProcMeminfo "MemFree") )
+    MemAvail=$(getProcMeminfo "MemAvailable") 
+    memavail=$(csvConcat "$memavail" ${MemAvail} ) 
+    cached=$(csvConcat "$cached" $(getProcMeminfo "Cached") )
+    shmem=$(csvConcat "$shmem" $(getProcMeminfo "Shmem") )
+    # swaptotal=$(csvConcat "$swaptotal" $(getProcMeminfo "SwapTotal") )
+    SwapFree=$(getProcMeminfo "SwapFree") 
+    swapfree=$(csvConcat "$swapfree" ${SwapFree} )
+    anonpages=$(csvConcat "$anonpages" $(getProcMeminfo "AnonPages") )
+    mapped=$(csvConcat "$mapped" $(getProcMeminfo "Mapped") )
+    pgpgin=$(csvConcat "$pgpgin" $(getProcVmstat "pgpgin") )
+    pgpgout=$(csvConcat "$pgpgout" $(getProcVmstat "pgpgout") )
+    pswpin=$(csvConcat "$pswpin" $(getProcVmstat "pswpin") )
+    pswpout=$(csvConcat "$pswpout" $(getProcVmstat "pswpout") )
+    if ${withDmainfo}; then
+        n=-2
+        while read line
+        do
+            n=$((n+1))      # skip two header lines
+            if [ $n -gt 0 ]; then
+                ar_dmapool[${n}]=$(echo $line | tr -s ' '| cut -f1 -d' ')   # fetch pool name
+                #  TODO we record used, but named variable as free !
+                dmafree=$(echo $line | tr -s ' '| cut -f14 -d' ')           # fetch free for pool
+                dmafree=$((dmafree*4))      #convert pages to kB (assuming 4kb pages)
+                ar_dmafree[${n}]=$(csvConcat "${ar_dmafree[${n}]}" "$dmafree" )
+                # echo "${ar_dmapool[${n}]} has: ${ar_dmafree[${n}]}"
+            fi
+        done < '/proc/dmainfo'
+    fi
+    if [ $gpudrv -gt 0 ]; then
+        new_gmempaged=0
+        n=0
+        if [ $gpudrv -eq 1 ]; then
+            while read line; do
+                n=$((n+1))
+                if [ $n -eq 3 ]; then
+                    tmp=(${line})
+                    new_gmemfree=${tmp[4]}
+                elif [ $n -gt 7 ]; then
+                    # read pageg memory lines from /sys/bus/platform/drivers/galcore/meminfo
+                    # convert string to array
+                    line=(${line})
+                    # fetch 3rd field of array/string
+                    tmp=${line[3]}
+                    # sum up all entries
+                    new_gmempaged=$((new_gmempaged + tmp))
+                fi
+            done < <(cat /sys/bus/platform/drivers/galcore/meminfo )
+        elif [ $gpudrv -eq 2 ]; then
+            while read line; do
+                n=$((n+1))
+                if [ $n -eq 3 ]; then
+                    # get only digits from line
+                    new_gmemfree=${line//[^0-9]/}
+                elif [ $n -eq 7 ]; then
+                    new_gmempaged=${line//[^0-9]/}
+                fi
+            done < <(cat /sys/kernel/debug/gc//meminfo )
+        fi
+        # convert from B to kB
+        new_gmemfree=$((new_gmemfree/1024))
+        gmemfree=$(csvConcat "$gmemfree" "$new_gmemfree" )
+        new_gmempaged=$((new_gmempaged/1024))
+        gmempaged=$(csvConcat "$gmempaged" "$new_gmempaged" )
+    fi
+    if ${optCpuUse}; then
+        cpuuse=$(csvConcat "$cpuuse" "${CPUUSE[0]}" )
+    fi
+    if ${optSysLoad}; then
+        SYSLOAD=$(cat /proc/loadavg | cut -f1 -d' ')
+        SYSLOAD=${SYSLOAD/./,}
+        sysload=$(csvConcat "$sysload" "${SYSLOAD}" )
+    fi
+}
+
+# this fkt will print all recorded data related to one process in a csv fashion
+# Params: $1 - pid of process
+function printProcData 
+{
+    pid=$1
+    if [ ${pmemprofile} -eq 1 ]; then
+        echo "VmRSS;$pid;${ar_pids[$pid]};kB;${ar_VmRSS[$pid]}"
+        echo "VmSwap;$pid;${ar_pids[$pid]};kB;${ar_VmSwap[$pid]}"
+        echo "VmSize;$pid;${ar_pids[$pid]};kB;${ar_VmSize[$pid]}"
+    elif [ ${pmemprofile} -gt 1 ]; then
+        echo "pss;$pid;${ar_pids[$pid]};kB;${ar_pss[$pid]}" 
+        echo "swap;$pid;${ar_pids[$pid]};kB;${ar_swap[$pid]}" 
+        echo "cpu;$pid;${ar_pids[$pid]};kB;${ar_cpu[$pid]}" 
+        
+        if [ ${pmemprofile} -gt 2 ]; then
+            echo "priv_dirty;$pid;${ar_pids[$pid]};kB;${ar_dirty[$pid]}"
+            echo "anon;$pid;${ar_pids[$pid]};kB;${ar_anon[$pid]}"
+            echo "filebacked;$pid;${ar_pids[$pid]};kB;${ar_filebacked[$pid]}"
+        fi
+    fi
+    if [ ${gmemprofile} -gt 0 ]; then
+        if [[ " ${ar_gpids[@]} " =~ " ${pid} " ]]; then
+            echo "gmem;$pid;${ar_pids[$pid]};kB;${ar_gmem[$pid]}"
+            if [ ${gmemprofile} -gt 1 ]; then
+                echo "gtexture;$pid;${ar_pids[$pid]};B;${ar_gtexture[$pid]}"
+                echo "grt;$pid;${ar_pids[$pid]};B;${ar_grt[$pid]}"
+                echo "gdepth;$pid;${ar_pids[$pid]};B;${ar_gdepth[$pid]}"
+                echo "gbitmap;$pid;${ar_pids[$pid]};B;${ar_gbitmap[$pid]}"
+            fi
+        fi
+    fi
+}
+
+function printSystemData 
+{
+    echo "time;0;time;s;${tstamps}"
+    if ${withDmainfo}; then # fetch dmapool sizes
+        for ((i=1; i <= ${#ar_dmapool[@]}; i++))
+        do
+            echo "dmaused;0;${ar_dmapool[${i}]};kB;${ar_dmafree[${i}]}"
+        done
+    fi
+    echo "tmpfs;0;mem;kB;${tmpfssize}"
+    echo "memfree;0;mem;kB;${memfree}"
+    echo "memavail;0;mem;kB;${memavail}"
+    echo "cached;0;mem;kB;${cached}"
+    echo "shmen;0;mem;kB;${shmem}"
+    echo "swapfree;0;swap;kB;${swapfree}"
+    echo "anonpages;0;anon;kB;${anonpages}"
+    echo "mapped;0;mapped;kB;${mapped}"
+    echo "pgpgin;0;pagein;num;${pgpgin}"
+    echo "pgpgout;0;pageout;num;${pgpgout}"
+    echo "pswpin;0;swapin;num;${pswpin}"
+    echo "pswpout;0;swapout;num;${pswpout}"
+
+    if [ $gpudrv -gt 0 ]; then
+        echo "gmemfree;0;gmemfree;kB;${gmemfree}"
+        echo "gmempaged;0;gmempaged;kB;${gmempaged}"
+    fi
+    if ${optCpuUse}; then
+        echo "cpuuse;0;overall;%;${cpuuse}"
+    fi
+    if ${optSysLoad}; then
+        echo "sysload;0;avg on 60s;load;${sysload}"
+    fi
+}
+
+function printSystemParams 
+{
+    
+    echo "memlog;0;version;;${VER}"
+    if [[ -e '/opt/bosch/cc_label.txt' ]]; then
+        swver=`cut -d' '  -f 2 /opt/bosch/cc_label.txt | head -n 1`
+        echo "swver;0;version;;${swver}"
+    fi
+    echo "uptime;0;start log;s;${uptime}"
+    echo "MemTotal;0;MemTotal;kB;$(getProcMeminfo "MemTotal")"
+    echo "swaptotal;0;swap;kB;$(getProcMeminfo "SwapTotal")"
+    if ${withDmainfo}; then # fetch dmapool sizes
+        n=-2
+        while read line
+        do
+            n=$((n+1))      # skip two header lines
+            if [ $n -gt 0 ]; then
+                pool=$(echo $line | tr -s ' '| cut -f1 -d' ')   # fetch pool name
+                size=$(echo $line | tr -s ' '| cut -f13 -d' ')           # fetch free for pool
+                size=$((size*4))      #convert pages to kB (assuming 4kb pages)
+                echo "dmapool;0;${pool};kB;${size}"
+            fi
+        done < '/proc/dmainfo'
+    fi
+    cmasize=`awk '/Number of blocks/{getline; print}' /proc/pagetypeinfo |tr -s ' '| cut -f 9 -d ' '`
+    cmasize=$((cmasize*4096))
+    echo "cmasize;0;cma;kB;${cmasize}"
+}
+
+# function will save all data to logfile. Exisiting logfile will be overwritten.
+# First data is writen to logfile postfixed with _tmp. Once writing is finished, it will be moved to
+# final name. This will prevent incomplete logs due to resets.
+function saveLogData {
+
+    echo "Saving data to $logfile ..."
+    printSystemParams > ${logfile}_tmp
+    printSystemData >> ${logfile}_tmp
+    echo "==========;====;=========;=====;"  >> ${logfile}_tmp      # add seperator
+    if [ ${pmemprofile} -gt 0 ]; then
+        
+        # iter over all seen processes
+        ignore=('sleep' , 'bash' , 'sed' , 'ls' , 'top')
+        for pid in ${!ar_pids[@]}; do
+            if [[ "${ignore[*]}" =~ "${ar_pids[${pid}]}" ]]; then
+                echo "Ignoring: ${ar_pids[${pid}]}"
+            else
+                printProcData ${pid} 1>>${logfile}_tmp 2>/dev/null
+            fi
+        done
+    fi
+    mv ${logfile}_tmp ${logfile}
+    sync
+}
+
+echo "This script records memory data and writes it to csv table until it is stopped via crtl-c"
+
+# parse cmdline arguments
+while getopts ":p:hn:d:e:f:clig:" opt; do 
+    case "$opt" in
+        h | \?)
+            showUsage 
+            exit 1
+            ;;
+        n)
+            numSamples=$OPTARG
+            ;;
+        d)
+            delay=$OPTARG
+            ;;
+        e)
+            eatmem=$OPTARG
+            echo "Memeater with ${eatmem}kB configured. Will start on CTRL-C."
+            ;;
+        f)
+            logfile=$OPTARG
+            ;;
+        c)
+            optCpuUse=true
+            echo "CPU usage will be logged."
+            ;;
+        l)
+            optSysLoad=true
+            echo "System load will be logged."
+            ;;
+        p)
+            if [ $OPTARG -lt 0 ] || [ $OPTARG -gt 3 ];then
+                echo "Error. Given profile for process mem is out of range"
+                exit
+            fi
+            pmemprofile=$OPTARG
+            ;;
+        i)
+            echo "Log will be stored immediately after each cycle."
+            optImmediateSave=true
+            ;;
+        g)
+            if [ $OPTARG -lt 1 ] || [ $OPTARG -gt 2 ];then
+                echo "Error. Given profile for gmem out of range"
+                exit
+            fi
+            gmemprofile=$OPTARG
+            ;;
+    esac
+done
+
+echo "Using profile: pmem=${pmemprofile}, gmem=${gmemprofile}"
+
+TMPNAME=${logfile}
+NR=0
+logfile=${TMPNAME}.${log_ext}
+while [ -e ${logfile} ];
+do
+	# logfilename already exist. Prefix a counter and try again
+    NR=$(( NR + 1))
+    logfile=${TMPNAME}_${NR}.${log_ext}
+done
+# found an usuble filename.
+echo "Using logfile: ${logfile}"
+
+gpudrv=0    # version of gpu driver. 0=no gpu, 1=old version, 2=new version
+# fetch list of pids using graphic mem from galcore driver
+# regex: find up to 3 numerical values at beginning of line. "-oh" is magic to show only result not complete line
+if [ -e /sys/bus/platform/drivers/galcore/pid ]; then
+    # old gpu driver
+    gpudrv=1
+    # for pid in $(cat /sys/bus/platform/drivers/galcore/pid | grep -oh "^[0-9].\{2\}")
+    # above line had problems with 4 digit pids. New try below.
+    # cat file, ignore first 5 lines and take always first field as pid.
+    for pid in $(cat /sys/bus/platform/drivers/galcore/pid | tail -n+5 | cut -f1 -d ' ')
+    do 
+        ar_gpids+=($pid)    # fill each pid to array
+    done
+    echo "Procs using graphic memory: ${ar_gpids[@]}"
+elif [ -e /sys/kernel/debug/gc/clients ]; then
+    # new gpu driver
+    gpudrv=2
+    for pid in $(cat /sys/kernel/debug/gc/clients | tail -n+3 | cut -f1 -d ' ')
+    do 
+        ar_gpids+=($pid)    # fill each pid to array
+    done
+    echo "Procs using graphic memory: ${ar_gpids[@]}"
+else
+    echo "System has no Videantis GPU."
+fi
+
+if [[ -e /proc/dmainfo ]]; then
+    echo "Using '/proc/dmainfo'"
+    withDmainfo=true
+else
+    withDmainfo=false
+fi
+if [ ${pmemprofile} -gt 0 ]; then
+    if [ -e /usr/local/bin/sumSmap ]; then
+        withSumSmap=true;
+    else
+        echo "Warning, 'sumSmap' not found. Using 'awk'."
+        withSumSmap=false;
+    fi
+fi
+
+# check if memeat binary is available.
+if [[ ! -e ${MEMEATBIN} ]]; then
+        echo "Warning, ${MEMEATBIN} not found. Disabling eatmem options."
+        eatmem=0
+fi
+
+getRelTimeS         # init timestamp
+
+#save uptime at start of logging
+uptime=$(cat /proc/uptime | cut -f1 -d' ')
+# remove fraction
+uptime=${uptime%.*}
+round=0
+run=true;           # global variable to stop
+
+echo "Recording data ..."
+while ${run}
+do
+
+    doCalcCpuUse
+    recSystemData
+    if [ ${pmemprofile} -gt 0 ]; then
+        forAllProcesses recProcData
+    fi
+
+    if [ -e /var/opt/bosch/dynamic/media/db/MyMedia.db ]; then
+        # mymedia exist, get size
+        mymedia=", MyMedia=$(wc -c < /var/opt/bosch/dynamic/media/db/MyMedia.db)"
+    else
+        mymedia=""
+    fi
+    # cpuload=`cat /proc/loadavg | cut -d' ' -f1`
+    if ${optSysLoad}; then
+        _SYSLOAD=", SysLoad=${SYSLOAD}"
+    fi
+    echo "... done #${round}, t=$(getRelTimeS)s, pids=$n, SwapFree=${SwapFree}, MemAvail=${MemAvail}, CpuUse=${CPUUSE[0]}%${_SYSLOAD}${mymedia}"
+
+    if ${optImmediateSave}; then
+        # store values immediately
+        saveLogData
+    fi
+
+
+    round=$((round+1))
+    if [[ $round -eq $numSamples ]]; then
+        # collected max number of samples
+       break 
+    fi
+
+    if [ ${eatmemrun} = true ]; then
+        if [ ${MEMEATPID} -eq 0 ]; then
+            # start memeat
+            # Attention, this might fail on host as meameat is ARM binary !!!
+            ${MEMEATBIN} -s ${eatmem} -i &> /dev/null &
+            MEMEATPID=$!
+            echo "Memeater [${MEMEATPID}] started to eat ${eatmem}kB per cycle."
+        else
+            # trigger eatmem to eat another chunk of memory
+            kill -SIGUSR1 ${MEMEATPID}
+        fi
+    fi
+
+    # wait some time till next round. SIGINT will terminate sleep immediately
+    sleep $delay    
+done
+
+if [ ${MEMEATPID} -ne 0 ]; then
+    kill -9 ${MEMEATPID}
+fi
+
+saveLogData
+
+echo "Bye !"

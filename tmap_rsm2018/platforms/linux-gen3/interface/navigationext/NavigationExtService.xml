@@ -1,0 +1,774 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="introspect.xsd" name="org.bosch.cm.navigation">
+  <interface name="org.bosch.cm.navigation.NavigationExtService">
+    <property access="read" name="NaviPropertyUpdateDimmingStatus" type="y"/>
+    <property access="read" name="NaviPropertyUpdateHmiState" type="u"/>
+    <property access="read" name="NaviPropertyDialPOICallStatus" type="y"/>
+    <property access="read" name="NaviPropertyCallServiceStatus" type="y"/>
+    <property access="read" name="NaviPropertyUpdateReverseGearState" type="y"/>
+    <property access="read" name="NaviPropertyUpdateDistanceUnit" type="y"/>
+    <property access="read" name="NaviPropertyUpdateHandBrakeStatus" type="y"/>
+    <property access="read" name="NaviPropertyUpdateLanguageIndex" type="y"/>
+    <property access="read" name="NaviPropertyUpdateLanguageSyncSrcId" type="y"/>
+    <property access="read" name="NaviPropertyUpdateDateTimeDetailInfo" type="(nyyyyyy)">
+      <annotation name="org.qtproject.QtDBus.QtTypeName" value="NXDateTimeDetailInfo"/>
+    </property>
+    <property access="read" name="NaviPropertyDateFormat" type="y"/>
+    <property access="read" name="NaviPropertyTimeFormat" type="y"/>
+    <property access="read" name="NaviPropertyDevMediaInfo" type="(ys)">
+      <annotation name="org.qtproject.QtDBus.QtTypeName" value="NXDevMediaInfo"/>
+    </property>
+    <property access="read" name="NaviPropertyMultiAmbienceLightingColorState" type="y"/>
+    <property access="read" name="NaviPropertyMexMode" type="y"/>
+    <property access="read" name="NaviPropertyUpdateLockStates" type="a(syqaq)">
+      <annotation name="org.qtproject.QtDBus.QtTypeName" value="NXLockStateInfoList"/>
+    </property>
+    <method name="NaviMethGetDeviceID">
+      <doc>
+        <line>NaviMethGetDeviceID = used by Thirdparty navigation app to get system device ID</line>
+        <line>OUT_Arg_1 -		sDeviceID - the system device ID which has fixed length of 8 characters</line>
+        <line>OUT_Arg_2 -		bResult - The result of get system device ID</line>
+      </doc>
+      <arg direction="out" name="sDeviceID" type="s">
+        <doc>
+          <line>sDeviceID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="bResult" type="b">
+        <doc>
+          <line>bResult = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="NaviMethPlayBeep">
+      <doc>
+        <line>NaviMethPlayBeep = used by Thirdparty navigation app to play audio beep</line>
+        <line>OUT_Arg_1 -		bResult - The result of play audio beep</line>
+      </doc>
+      <arg direction="out" name="bResult" type="b">
+        <doc>
+          <line>bResult = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="NaviMethPlayBeepMelody">
+      <doc>
+        <line>NaviMethPlayBeepMelody = used by Thirdparty navigation app to play a beep melody file</line>
+        <line>IN_ARG_1 - 		szMelodyPath - The path of melody files(Cat Meow.mp3, Chime.mp3, Church Bell 1.mp3,</line>
+        <line>Dog 1.mp3, Horn.mp3, Melody.mp3 ) providing from thirdparty .</line>
+        <line></line>
+        <line>OUT_Arg_1 -		bResult - The result of play audio beep</line>
+      </doc>
+      <arg direction="in" name="szMelodyPath" type="s">
+        <doc>
+          <line>szMelodyPath = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="bResult" type="b">
+        <doc>
+          <line>bResult = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="NaviMethDialPOI">
+      <doc>
+        <line>NaviMethDialPOI = Called when making a phone call.</line>
+        <line>in	-> szTelNumber: the string of the phone number</line>
+        <line>out -> bResult: The result of this method call</line>
+      </doc>
+      <arg direction="in" name="szTelNumber" type="s">
+        <doc>
+          <line>szTelNumber = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="bResult" type="b">
+        <doc>
+          <line>bResult = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="NaviMethPlayNaviAnnouncement">
+      <doc>
+        <line>NaviMethPlayNaviAnnouncement = Used by third party navigation to play navi announcement, the signal of NaviSigNaviAnnouncementStatus</line>
+        <line>will be emitted when handle error or play it successfully.</line>
+        <line>IN_Arg_1 -	u32Type	- The navigation announcement type</line>
+        <line>IN_Arg_2 -	aContentList - The content which need to play, the content should depend on the type.</line>
+        <line>If type is NAVI_ANNOUNCEMENT_TYPE_PURE_TEXT, then content is pure text.</line>
+        <line>If type is NAVI_ANNOUNCEMENT_TYPE_RECORD_FILE, then content is file path and name.</line>
+        <line>If type is NAVI_ANNOUNCEMENT_TYPE_PCM, then content can be ignore, the PCM stream will share with shared memory.</line>
+        <line>OUT_Arg-	bResult	The result of this method call</line>
+      </doc>
+      <arg direction="in" name="u32Type" type="u">
+        <doc>
+          <line>u32Type (of type NaviAnnouncementType) = Description missing</line>
+          <line>enum[NAVI_ANNOUNCEMENT_TYPE_PURE_TEXT (null), NAVI_ANNOUNCEMENT_TYPE_RECORD_FILE (null), NAVI_ANNOUNCEMENT_TYPE_PCM (null)]</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="aContentList" type="as">
+        <doc>
+          <line>aContentList = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="bResult" type="b">
+        <doc>
+          <line>bResult = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="NaviMethAbortNaviAnnouncement">
+      <doc>
+        <line>NaviMethAbortNaviAnnouncement = Used by third party navigation to abort the current active navigation announcement, the signal of NaviSigNaviAnnouncementStatus</line>
+        <line>will be emitted when handle error or abort it successfully.</line>
+        <line>OUT_Arg-	bResult	The result of this method call</line>
+      </doc>
+      <arg direction="out" name="bResult" type="b">
+        <doc>
+          <line>bResult = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="NaviMethThirdPartyNaviStartState">
+      <doc>
+        <line>NaviMethThirdPartyNaviStartState = Inform the Navigation_ExtHall start-up status from third party navigation.</line>
+        <line>in	-> u32ThirdPartyNaviStartState: the navigation start state</line>
+      </doc>
+      <arg direction="in" name="u32ThirdPartyNaviStartState" type="u">
+        <doc>
+          <line>u32ThirdPartyNaviStartState = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="NaviMethRestartSystem">
+      <doc>
+        <line>NaviMethRestartSystem = This method will restart system according SpmRestartType.</line>
+        <line>in	-> emRestartType: The restart type</line>
+        <line>out -> bResult: The result of this method call</line>
+      </doc>
+      <arg direction="in" name="emRestartType" type="u">
+        <doc>
+          <line>emRestartType (of type SpmRestartType) = Description missing</line>
+          <line>enum[RESTART_DOWNLOAD_FINISHED (4), RESTART_USER_RESET (13)]</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="bResult" type="b">
+        <doc>
+          <line>bResult = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="NaviMethGetMountingAngle">
+      <doc>
+        <line>NaviMethGetMountingAngle = This method used to get the sensor mounting angle, NaviSignalMountingAngle will be emitted after get mounting angle success.</line>
+        <line>out -> bResult: The result of this method call</line>
+      </doc>
+      <arg direction="out" name="bResult" type="b">
+        <doc>
+          <line>bResult = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="NaviMethRemountPath">
+      <doc>
+        <line>NaviMethRemountPath = Called by third party navigation when needs to remount path</line>
+        <line>IN_ARG_1 -  szRemountPath - The path which needs to remount. For example:&quot;/var/opt/bosch/navdata&quot;.</line>
+        <line>IN_ARG_2 -  emRemountType - The remount type: &quot;r&quot;(read), &quot;rw&quot;(read and write).</line>
+        <line></line>
+        <line>OUT_Arg_1-  bResult - The result of remount path</line>
+      </doc>
+      <arg direction="in" name="emRemountType" type="u">
+        <doc>
+          <line>emRemountType (of type RemountType) = Description missing</line>
+          <line>enum[REMOUNT_TYPE_READ (null), REMOUNT_TYPE_READ_WRITE (null)]</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="szRemountPath" type="s">
+        <doc>
+          <line>szRemountPath = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="bResult" type="b">
+        <doc>
+          <line>bResult = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="NaviMethSystemCommand">
+      <doc>
+        <line>NaviMethSystemCommand = Called by third party navigation when needs to mount folder/partition, bind and umount</line>
+        <line>IN_ARG_1 -  emCmdCode - The system command code.</line>
+        <line>IN_ARG_2 -  strSrcPath - The source path, for example:&quot;/var/opt/bosch/navdata&quot;.</line>
+        <line>IN_ARG_3 -  strDestPath - The destination path, for example:&quot;/var/lib/lxc/extnav/rootfs/var/opt/bosch/navdata.</line>
+        <line></line>
+        <line>OUT_Arg_1-  bResult - The result of system command</line>
+        <line>-true:  The command execute success</line>
+        <line>-false:  The command execute failed</line>
+      </doc>
+      <arg direction="in" name="emCmdCode" type="u">
+        <doc>
+          <line>emCmdCode (of type eCmdCode) = Description missing</line>
+          <line>enum[E_CMD_CODE_MOUNT_DISK (0), E_CMD_CODE_MOUNT_DIR (null), E_CMD_CODE_REMOUNT_DIR_RO (null), E_CMD_CODE_REMOUNT_DIR_RW (null), E_CMD_CODE_REMOUNT_USB_RO (null), E_CMD_CODE_REMOUNT_USB_RW (null), E_CMD_CODE_UMOUNT_DIR (null), E_CMD_CODE_LXC_CHOWN (null)]</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="strSrcPath" type="s">
+        <doc>
+          <line>strSrcPath = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="strDestPath" type="s">
+        <doc>
+          <line>strDestPath = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="bResult" type="b">
+        <doc>
+          <line>bResult = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="NaviMethGetPublicConfigItem">
+      <doc>
+        <line>NaviMethGetPublicConfigItem = Used by third party navigation to get Public configuration data from ConfigManager.</line>
+        <line>The response will be send via signal NaviSignalPublicConfigItem</line>
+        <line>IN_Arg-      publicItemName        It is the generic configuration data that applications are interested in.</line>
+        <line>It can either be publicItemName or localItemName</line>
+      </doc>
+      <arg direction="in" name="publicItemName" type="s">
+        <doc>
+          <line>publicItemName = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="NaviMethUpdateLock">
+      <doc>
+        <line>NaviMethUpdateLock = used by Thirdparty navigation app to set system update lock</line>
+        <line>This method is used to set the Property UpdateLockStates.</line>
+        <line>You can request</line>
+        <line>- a new lock</line>
+        <line>- a change of the state of an existing lock</line>
+        <line>- add remove your application from</line>
+        <line>owner</line>
+        <line>user list</line>
+      </doc>
+      <arg direction="in" name="strLockName" type="s">
+        <doc>
+          <line>strLockName = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="eLockRequest" type="y">
+        <doc>
+          <line>eLockRequest = SPM_Use = &quot;0&quot;          add appId of client to list of users, remove appId from owner</line>
+          <line>SPM_eserve = &quot;1&quot;       make appId of client the owner, request state=reserved, remove appId from users</line>
+          <line>SPM_Lock = &quot;2&quot;         make appId of client the owner, request state=locked (if user list is empty), request state=locking (if user list is filled), remove appId from users</line>
+          <line>SPM_MasterLock = &quot;3&quot;   force making appId of client the owner, remove existing owner, set state=locked, clear list of users</line>
+          <line>SPM_Release = &quot;4&quot;      remove appId from user, remove appId from owner</line>
+        </doc>
+      </arg>
+    </method>
+    <signal name="NaviSigNaviAnnouncementStatus">
+      <doc>
+        <line>NaviSigNaviAnnouncementStatus = This signal will be emitted to inform the status of navigation announcement.</line>
+        <line>out -> u32NaviAnnouncementStatus: The status of navigation announcement which update to third party navigation</line>
+      </doc>
+      <arg direction="out" name="u32NaviAnnouncementStatus" type="u">
+        <doc>
+          <line>u32NaviAnnouncementStatus (of type NaviAnnouncementStatus) = Description missing</line>
+          <line>enum[NAVI_ANNOUNCEMENT_STATUS_INVALID (null), NAVI_ANNOUNCEMENT_STATUS_PLAY_FAIL (null), NAVI_ANNOUNCEMENT_STATUS_PLAY_OK (null), NAVI_ANNOUNCEMENT_STATUS_ABORT_FAIL (null), NAVI_ANNOUNCEMENT_STATUS_ABORT_OK (null)]</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="ResetToFactorySettings">
+      <doc>
+        <line>ResetToFactorySettings = used by Thirdparty navigation app to Reset navigation to factory settings</line>
+      </doc>
+    </signal>
+    <signal name="PlayBeepStatus">
+      <doc>
+        <line>PlayBeepStatus = Inform registered Client about beep status</line>
+        <line>out -> uBeepStatus  : server generate the beep play status and send to all registry client for this</line>
+      </doc>
+      <arg direction="out" name="uBeepStatus" type="y">
+        <doc>
+          <line>uBeepStatus = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="PlayMelodyStatus">
+      <doc>
+        <line>PlayMelodyStatus = Inform registered Client about melody status</line>
+        <line>out -> uMelodyStatus  : server generate the melody play status and send to all registry client for this</line>
+      </doc>
+      <arg direction="out" name="uMelodyStatus" type="y">
+        <doc>
+          <line>uMelodyStatus = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="NaviSignalSpeedValue">
+      <doc>
+        <line>NaviSignalSpeedValue = Inform registered Client about current speed value</line>
+        <line>out -> u16SpeedValue  : current speed value, unit is 0.01 km/h</line>
+      </doc>
+      <arg direction="out" name="u16SpeedValue" type="q">
+        <doc>
+          <line>u16SpeedValue = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="NaviSignalMountingAngle">
+      <doc>
+        <line>NaviSignalMountingAngle = Inform registered Client about gyro and ACC mounting angle</line>
+        <line>out -> mountingAngle  : the gyro and ACC mounting angle</line>
+      </doc>
+      <arg direction="out" name="mountingAngle" type="((yyyyyyyyy)(yyyyyyyyy))">
+        <doc>
+          <line>mountingAngle = Description missing</line>
+        </doc>
+      </arg>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="NXMountingAngle"/>
+    </signal>
+    <signal name="NaviSignalRemountStatus">
+      <doc>
+        <line>NaviSignalRemountStatus = This signal will be emitted to inform the status of remounting partition.</line>
+        <line>out -> u8RemountStatus: The status of remounting status updated to third party navigation</line>
+      </doc>
+      <arg direction="out" name="u8RemountStatus" type="y">
+        <doc>
+          <line>u8RemountStatus = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="NaviSignalRFAntennaStatus">
+      <doc>
+        <line>NaviSignalRFAntennaStatus = Informs the RF antenna status.</line>
+        <line>out -> u8RFAntenna  : This gives the response from RL of antenna type</line>
+        <line>0 AMFM_Antenna1 		VICS antenna in Japan project</line>
+        <line>1 AMFM_Antenna2</line>
+        <line>2 DAB_Antenna1</line>
+        <line>3 GPS_Antenna</line>
+        <line>4 DTV_Antenna1</line>
+        <line>5 DTV_Antenna2</line>
+        <line>6 DTV_Antenna3</line>
+        <line>7 DTV_Antenna4</line>
+        <line>8 Unknown_Antenna</line>
+        <line>out -> u8RFAntennaStatus: This provides the antenna status.</line>
+        <line>0 TUN_MSTR_RF_ANTENNA_STATE_UNKNOWN</line>
+        <line>1 TUN_MSTR_RF_ANTENNA_STATE_OK</line>
+        <line>2 TUN_MSTR_RF_ANTENNA_STATE_OPEN</line>
+        <line>3 TUN_MSTR_RF_ANTENNA_STATE_SHORT</line>
+        <line>4 TUN_MSTR_RF_ANTENNA_STATE_DEACTIVATED</line>
+        <line>5 TUN_MSTR_RF_ANTENNA_STATE_DEACTIVATED_LOW_VG</line>
+        <line>6 TUN_MSTR_RF_ANTENNA_STATE_DEACTIVATED_HIGH_VG</line>
+        <line>7 TUN_MSTR_RF_ANTENNA_STATE_OPEN_AMPLIFIER</line>
+        <line>8 TUN_MSTR_RF_ANTENNA_STATE_PASSIVE</line>
+        <line>9 TUN_MSTR_RF_ANTENNA_STATE_NUMBER_OF_ITEM</line>
+        <line>out -> u8ConnectionCurrent: This provides the measured current in mA.</line>
+      </doc>
+      <arg direction="out" name="u8RFAntenna" type="y">
+        <doc>
+          <line>u8RFAntenna = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="u8RFAntennaStatus" type="y">
+        <doc>
+          <line>u8RFAntennaStatus = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="u8ConnectionCurrent" type="y">
+        <doc>
+          <line>u8ConnectionCurrent = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="NaviSignalDialError">
+      <arg direction="out" name="u8DialField" type="y">
+        <doc>
+          <line>u8DialField = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="u8DialErrorCode" type="y">
+        <doc>
+          <line>u8DialErrorCode = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="NaviSignalPublicConfigItem">
+      <arg direction="out" name="u8Status" type="y">
+        <doc>
+          <line>u8Status = SUCCESS         =&quot;0x00&quot;</line>
+          <line>FAILED          =&quot;0x01&quot;</line>
+          <line>UNKNOWN_ITEM    =&quot;0x02&quot;</line>
+          <line>NO_PERMISSION   =&quot;0x03&quot;</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="publicConfigData" type="a(ss)">
+        <doc>
+          <line>publicConfigData = Description missing</line>
+        </doc>
+      </arg>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="NXConfigInfoItemList"/>
+    </signal>
+    <signal name="NaviSignalAppStateNavigation">
+      <arg direction="out" name="u8SpiAppStateNav" type="y">
+        <doc>
+          <line>u8SpiAppStateNav = SPI_APP_STATE_NAV_UNKNOWN         =&quot;0x00&quot;</line>
+          <line>No navigation APP is active.Hence no app state for navigation</line>
+          <line></line>
+          <line>SPI_APP_STATE_NAV_ACTIVE          =&quot;0x01&quot;</line>
+          <line>Navigation APP is active.</line>
+          <line></line>
+          <line>SPI_APP_STATE_NAV_NOTACTIVE    =&quot;0x02&quot;</line>
+          <line>The state is send to inform that an already active TBT navigation has ended. ie,an app state change from active to not active.</line>
+        </doc>
+      </arg>
+    </signal>
+  </interface>
+  <interface name="bosch.cm.profile">
+    <version>1.1</version>
+    <property access="read" name="activeProfile" type="y"/>
+    <property access="read" name="status" type="u"/>
+    <property access="read" name="copyProfile" type="(yy)">
+	<annotation name="org.qtproject.QtDBus.QtTypeName" value="copyInfo"/>
+    </property>
+    <property access="read" name="deleteProfile" type="y"/>
+    <property access="read" name="dataChanged" type="u"/>
+    <property access="read" name="createProfile" type="y"/>
+    <property access="read" name="profileName" type="s"/>
+    <property access="read" name="profileImage" type="y"/>
+    <method name="doRegisterApp">
+      <doc>
+        <line>doRegisterApp = Each Application, that stores Profile Data has to register here.</line>
+        <line>The application has to store the AppID returned by RegisterApp and uset it for all other calls to the Profile Manager</line>
+      </doc>
+      <arg direction="in" name="AppName" type="s">
+        <doc>
+          <line>AppName = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="AppID" type="u">
+        <doc>
+          <line>AppID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="ApplName" type="s">
+        <doc>
+          <line>ApplName = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="reloadData" type="b">
+        <doc>
+          <line>reloadData = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="onDataChanged">
+      <doc>
+        <line>onDataChanged = Function to be called after user change has been done. User change is triggered by activeProfile Property update</line>
+      </doc>
+      <arg direction="in" name="ApplicationPID" type="u">
+        <doc>
+          <line>ApplicationPID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="Result" type="u">
+        <doc>
+          <line>Result = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="onProfileDeleted">
+      <doc>
+        <line>onProfileDeleted = Function to be called after user has been deleted. User deleteion is triggered by deleteProfile Property update</line>
+      </doc>
+      <arg direction="in" name="ApplicationPID" type="u">
+        <doc>
+          <line>ApplicationPID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="Result" type="u">
+        <doc>
+          <line>Result = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="onProfileCopied">
+      <doc>
+        <line>onProfileCopied = function to be called by the clients after Profile copy action triggered by copyProfile property update has been executed</line>
+      </doc>
+      <arg direction="in" name="ApplicationPID" type="u">
+        <doc>
+          <line>ApplicationPID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="Result" type="u">
+        <doc>
+          <line>Result = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="onProfileCreated">
+      <doc>
+        <line>onProfileCreated = function to be called by the clients after Profile create action triggered by createProfile property update has been executed</line>
+      </doc>
+      <arg direction="in" name="ApplicationPID" type="u">
+        <doc>
+          <line>ApplicationPID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="Result" type="u">
+        <doc>
+          <line>Result = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="doCopyProfile">
+      <doc>
+        <line>doCopyProfile = function to request a user copy from the Profile Manager</line>
+      </doc>
+      <arg direction="in" name="sourceUserID" type="y">
+        <doc>
+          <line>sourceUserID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="destUserID" type="y">
+        <doc>
+          <line>destUserID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="Result" type="u">
+        <doc>
+          <line>Result = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="doDeleteProfile">
+      <doc>
+        <line>doDeleteProfile = function to delete a Profile</line>
+      </doc>
+      <arg direction="in" name="userID" type="y">
+        <doc>
+          <line>userID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="Result" type="u">
+        <doc>
+          <line>Result = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="doChangeToProfile">
+      <doc>
+        <line>doChangeToProfile = function to request a change of the current user from the Profile Manager</line>
+      </doc>
+      <arg direction="in" name="userID" type="y">
+        <doc>
+          <line>userID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="Result" type="u">
+        <doc>
+          <line>Result = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="doCreateProfile">
+      <doc>
+        <line>doCreateProfile = function to request a creations of a new User Profile from the Profile Manager</line>
+      </doc>
+      <arg direction="in" name="newName" type="s">
+        <doc>
+          <line>newName = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="imageID" type="y">
+        <doc>
+          <line>imageID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="Result" type="u">
+        <doc>
+          <line>Result = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="newUserID" type="y">
+        <doc>
+          <line>newUserID = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="doSetProfileName">
+      <doc>
+        <line>doSetProfileName = sets the profile name for the current profile</line>
+      </doc>
+      <arg direction="in" name="newName" type="s">
+        <doc>
+          <line>newName = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="Result" type="u">
+        <doc>
+          <line>Result = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="do_SetProfileName">
+      <doc>
+        <line>do_SetProfileName = sets the profile name for the current profile</line>
+      </doc>
+      <arg direction="in" name="newName" type="s">
+        <doc>
+          <line>newName = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="userID" type="y">
+        <doc>
+          <line>userID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="Result" type="u">
+        <doc>
+          <line>Result = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="getProfileNames">
+      <doc>
+        <line>getProfileNames = gets all profile names</line>
+      </doc>
+      <arg direction="out" name="names" type="as">
+        <doc>
+          <line>names = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="importProfileImage">
+      <doc>
+        <line>importProfileImage = import an image from usb drive as Proifle image for the current Profile !!depricated. use doImportProfileImage!!</line>
+      </doc>
+      <arg direction="in" name="sourcePath" type="s">
+        <doc>
+          <line>sourcePath = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="width" type="q">
+        <doc>
+          <line>width = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="height" type="q">
+        <doc>
+          <line>height = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="result" type="u">
+        <doc>
+          <line>result = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="doImportProfileImage">
+      <doc>
+        <line>doImportProfileImage = import an image from usb drive as Proifle image in the given slot. if slot is 0xFFFF, then the profile manager will assign it tot the user image slot for the current Profile</line>
+      </doc>
+      <arg direction="in" name="sourcePath" type="s">
+        <doc>
+          <line>sourcePath = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="width" type="q">
+        <doc>
+          <line>width = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="height" type="q">
+        <doc>
+          <line>height = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="slotIdx" type="q">
+        <doc>
+          <line>slotIdx = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="bSetForCurrentProfile" type="b">
+        <doc>
+          <line>bSetForCurrentProfile = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="result" type="u">
+        <doc>
+          <line>result = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="removeUserImage">
+      <doc>
+        <line>removeUserImage = delete an imported image referenced by the slotIdx from the system.</line>
+      </doc>
+      <arg direction="in" name="slotIdx" type="q">
+        <doc>
+          <line>slotIdx = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="result" type="u">
+        <doc>
+          <line>result = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setProfileImage">
+      <doc>
+        <line>setProfileImage = set current profile image (index)</line>
+      </doc>
+      <arg direction="in" name="imageID" type="y">
+        <doc>
+          <line>imageID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="result" type="u">
+        <doc>
+          <line>result = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="doSetProfileImage">
+      <arg direction="in" name="imageID" type="y">
+        <doc>
+          <line>imageID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="userID" type="y">
+        <doc>
+          <line>userID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="result" type="u">
+        <doc>
+          <line>result = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="getProfileImages">
+      <doc>
+        <line>getProfileImages = gets all profile images</line>
+      </doc>
+      <arg direction="out" name="images" type="ay">
+        <doc>
+          <line>images = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="getProfileTypes">
+      <doc>
+        <line>getProfileTypes = gets all profile types</line>
+      </doc>
+      <arg direction="out" name="types" type="au">
+        <doc>
+          <line>types = Description missing</line>
+        </doc>
+      </arg>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="types"/>
+    </method>
+  </interface>
+  </interface>
+</node>

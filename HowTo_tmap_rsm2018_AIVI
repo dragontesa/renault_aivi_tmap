@@ -1,0 +1,80 @@
+필요한 개발 패키지
+libbsd-dev   (/bsd/libstdlib.h)
+libssl-dev   (/usr/include/openssl/*)
+libgles2-mesa-dev  (GLES2/gl2.h)
+libmesa-dev (GL/gl.h)
+
+--------------------------------
+openGL 관련 개발 패키지
+libglu1-mesa-dev freeglut3-dev mesa-common-dev
+(http://www.codebind.com/linux-tutorials/install-opengl-ubuntu-linux/)
+
+libfreetype6-dev
+libcurl4-gnutls-dev
+libzlib1g-dev
+libpng-dev
+libsqlite3-dev
+libasound2-dev (for alsa audio)
+libjpeg8-dev (pop 19.04)
+
+
+
+Qt Creator 
+1. 프로젝트 라이브러리 를 위한 경로설정 
+libmnssdk.so libnddssdk.so libvsmsdk.so libtmap_rsm_ui.so
+
+LD_LIBRARY_PATH=
+
+2. 프로젝트 위치가 /home/thirdpartydev  아닌 경우, 런타임에 navdata 와 같은 데이터 경로 찾기 위한.
+RSM2018_PREFIX =  /path/to/project/entry/ (e.g /media/njas/DATA0/w0)
+
+
+3. QML2 import 모듈 찾을 수 없다는 빌드 에러 나는 경우
+ QML2_IMPORT_PATH = /path/to/Qt-sdk-installed/qml (e.g /home/thirdpartydev/Qt5.6.1_dt_es/qml)
+ QML_IMPORT_TRACE = 1
+
+4. QT_QPA_PLATFORM_PLUGIN_PATH = /path/to/Qt-sdk-installed/plugins (e.g /home/thirdpartydev/Qt5.6.1_dt_es/plugins)
+
+옵션1 QT PLUGINS 디버그 활성
+QT_DEBUG_PLUGINS 1 
+옵션2 UI 표준출력 비활성
+TMAP_LOG_FILTER_DISABLE_STDOUT 1
+옵션3 로그필터 활성
+TMAP_LOG_FILTER_ENABLE 1
+옵션4 로그 필터 파일 지정 
+TMAP_LOG_FILTER_FILEPATH  /media/njas/DATA0/w0/aivi_tmap_data/tmap_rsm2018/aivi_logging.dlf
+
+
+
+팁!! -rpath에 의한 런타임 라이브러리 경로 설정
+
+# rpath for .so files like mns ndds vsm tmap_rsm_ui
+unix {
+   CONFIG(debug,debug|release) {
+    # suppress the default RPATH if you wish
+    QMAKE_LFLAGS_RPATH=
+    # add your own with quoting gyrations to make sure $ORIGIN gets to the command line unexpanded
+    QMAKE_LFLAGS += \
+        "-Wl,-rpath,\'/home/thirdpartydev/Qt5.6.1_dt_es/lib'" \
+        "-Wl,-rpath,\'$$MNSSDKPath/lib/linux/debug'" \
+        "-Wl,-rpath,\'$$VSMSDKPath/lib/linux/debug'" \
+        "-Wl,-rpath,\'$$PWD/../Debug_tmap_rsm2018-Desktop_Qt_5_6_1_TM/$$TMAP_RSM_UI_PATH/debug'"
+   }
+   else {a
+    # suppress the default RPATH if you wish
+    QMAKE_LFLAGS_RPATH=
+    # add your own with quoting gyrations to make sure $ORIGIN gets to the command line unexpanded
+    QMAKE_LFLAGS += \
+        "-Wl,-rpath,\'/home/thirdpartydev/Qt5.6.1_dt_es/lib'" \
+        "-Wl,-rpath,\'$$MNSSDKPath/lib/linux/release'" \
+        "-Wl,-rpath,\'$$VSMSDKPath/lib/linux/release'" \
+        "-Wl,-rpath,\'$$PWD/../Debug_tmap_rsm2018-Desktop_Qt_5_6_1_TM/$$TMAP_RSM_UI_PATH/release'"
+   }
+}
+
+
+
+
+
+10. Custom Step after build
+-fpv %{buildDir}/thirdpartynavigation_out.out %{buildDir}/ndds/debug/libnddssdk.so %{buildDir}/ui/debug/libtmap_rsm_ui.so %{buildDir}/vsmsdk/build/qtcreator_vsm_sdk/build/libvsmsdk.so ../aivi_tmap_bin

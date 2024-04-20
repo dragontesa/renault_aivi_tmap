@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="introspect.xsd" name="org.bosch.cm.navigation.ext">
+  <interface name="org.bosch.cm.navigation.NavigationExtAgent">
+
+    <signal name="position">
+      <doc>
+        <line>This properties provides the actual position and the source of the position data. If source is "invalid" don't use the position information. The update frequency is at least 1Hz.</line>
+      </doc>
+      
+      <arg direction="out" name="posLatitude" type="d">
+        <doc>
+          <line>the latitude of the position in degree.</line>
+        </doc>
+      </arg>
+      
+      <arg direction="out" name="posLongitude" type="d">
+        <doc>
+          <line>the longitude of the position in degree.</line>
+        </doc>
+      </arg>
+      
+      <arg direction="out" name="posSource" type="y">
+        <doc>
+          <line>source/quality of position information.</line>
+        </doc>
+      </arg>
+      
+      <arg direction="out" name="countryCode" type="q">
+        <doc>
+          <line>country code of current position.</line>
+        </doc>
+      </arg>
+      
+      <arg direction="out" name="countryCodeSource" type="y">
+        <doc>
+          <line>source/validity of country code information.</line>
+        </doc>
+      </arg>
+      
+      <arg direction="out" name="timeZone" type="(iyi)">
+        <doc>
+          <line>timezone of current position.</line>
+          <line>out -> i32TimeZoneDifference  : difference in seconds to UTC</line>
+          <line>out -> u8DST_State: state of daylight saving time.</line>
+          <line>out -> i32DSTDifference: difference in seconds to 'normal' time when daylight saving time is in effect.</line>
+        </doc>
+      </arg>
+      
+      <arg direction="out" name="timeZoneSource" type="y">
+        <doc>
+          <line>source/validity of time zone information.</line>
+        </doc>
+      </arg>
+    </signal>
+    
+    
+    <signal name="velocity">
+      <doc>
+        <line>
+      This property provides information about the actual velocity and the
+	  source of the velocity value. If the source is "invalid" don't use the
+	  velocity. When the speed value is not calibrated in an environment
+	  where calibration is expected e.g. in a device with navigation and
+	  dead reckoning, the status will be invalid until a valid calibration
+	  is available. The update frequency is at least 1Hz.</line>
+      </doc>
+      
+      <arg direction="out" name="velocityValue" type="q">
+        <doc>
+          <line>velocity in [km/h].</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="velocitiySource" type="y">
+        <doc>
+          <line>source/quality of velocity information.</line>
+        </doc>
+      </arg>
+	  
+    </signal>
+    
+    <signal name="deadreckoning_info">
+      <doc>
+        <line>This property provides the current deadreckoning information.
+			If source is "invalid" don't use the deadreckoning information.
+			The update frequency is at least 1Hz.</line>
+      </doc>
+      
+      <arg direction="out" name="drTimestamp" type="t" >
+        <doc>Timestamp of deadreckoning information since the Epoch (00:00:00 UTC, January 1, 1970), measured in milliseconds.</doc>
+      </arg>
+
+      <arg direction="out" name="drSystemTime" type="u" >
+        <doc>SystemTime of used sensors. Unit (tics since systemstart) depends on platform.</doc>
+      </arg>
+
+      <arg direction="out" name="drLatitude" type="d" >
+        <doc>The WGS84-latitude of the deadreckoning position in degree</doc>
+      </arg>
+
+      <arg direction="out" name="drLongitude" type="d" >
+        <doc>The WGS84-longitude of the deadreckoning position in degree</doc>
+      </arg>
+
+      <arg direction="out" name="drHeading" type="d" >
+        <doc>
+          <line>The deadreckoning heading (orientation of the car). Clockwise in degree.</line>
+          <line>North is at 0 degree, East is at 90 degree, South is at 180 degree, West is at 270 degree.</line>
+        </doc>
+      </arg>
+
+      <arg direction="out" name="drSpeed" type="d" >
+        <doc>The deadreckoning speed [m/s]. Value is negative if car drives backwards.</doc>
+      </arg>
+
+      <arg direction="out" name="drAltitude" type="d" >
+        <doc>The altitude of the deadreckoning position related to mean sea level [m].</doc>
+      </arg>
+
+      <arg direction="out" name="drTurnrateX" type="d" >
+        <doc>
+          <line>The deadreckoning turnrate around X-Axis.</line>
+          <line>X-Axis is pointing from back to front of the vehicle (Longitudinal Axis or Roll Axis).</line>
+          <line>Positive value means the left side of the vehicle is raised, while the right side is lowered [ degree/s].</line>
+        </doc>
+      </arg>
+
+      <arg direction="out" name="drTurnrateY" type="d" >
+        <doc>
+          <line>The deadreckoning turnrate around Y-Axis.</line>
+          <line>Y-Axis is pointing from right to left side of the vehicle (Lateral Axis or Pitch Axis).</line>
+          <line>Positive value means the front of the vehicle is lowered, while the back is raised [ degree/s].</line>
+        </doc>
+      </arg>
+
+      <arg direction="out" name="drTurnrateZ" type="d" >
+        <doc>
+          <line>The deadreckoning turnrate around Z-Axis.</line>
+          <line>Z-Axis is pointing from the floor to the roof of the vehicle (Normal Axis or Yaw Axis).</line>
+          <line>Positive value means the front of the vehicle is turned to the left [ degree/s].</line>
+        </doc>
+      </arg>
+
+      <arg direction="out" name="drAccelerationX" type="d" >
+        <doc>
+          <line>The deadreckoning acceleration along X-Axis.</line>
+          <line>X-Axis is pointing from back to front of the vehicle (Longitudinal Axis).</line>
+          <line>Positive value means the vehicle is accelerated in forward direction [m/ss].</line>
+        </doc>
+      </arg>
+
+      <arg direction="out" name="drAccelerationY" type="d" >
+        <doc>
+          <line>The deadreckoning acceleration along Y-Axis.</line>
+          <line>Y-Axis is pointing from right to left side of the vehicle (Lateral Axis).</line>
+          <line>Positive value means the vehicle is accelerated to the left [m/ss].</line>
+          <line>E.g. when driving a curve to the left, the accelerometer measures the centripetal force as positive value.</line>
+        </doc>
+      </arg>
+
+      <arg direction="out" name="drAccelerationZ" type="d" >
+        <doc>
+          <line>The deadreckoning acceleration along Z-Axis.</line>
+          <line>Z-Axis is pointing from floor to the roof of the vehicle (Normal Axis).</line>
+          <line>Positive value means the vehicle is accelerated up [m/ss].</line>
+          <line>Keep in mind, that g-force is completely included in the measured value with ~ +9.8m/ss, when vehicle is horizontally aligned.</line>
+        </doc>
+      </arg>
+
+      <arg direction="out" name="drInfoSource" type="y">
+        <doc>Source of deadreckoning information.</doc>
+      </arg>
+
+      <arg direction="out" name="drInfoValidity" type="q">
+        <doc>Validity of deadreckoning information.</doc>
+      </arg>
+    </signal>
+  </interface>
+</node>

@@ -1,0 +1,8 @@
+#!/bin/sh
+if [ ! $# -gt 2 ]; then
+	echo "type source ip and port number to capture"
+exit 0
+fi
+SRCIP=$1
+PORT=$2
+tcpdump -A -n -s 0 'src $SRCIP and tcp port $PORT and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'

@@ -1,0 +1,13 @@
+#!/bin/sh
+tar xzf libboost.tar.gz
+ssh root@172.17.0.1 'rwrfs'
+scp -r libboost/* root@172.17.0.1:/opt/bosch/navigation_kor/lib
+ssh root@172.17.0.1 'ln -sf libboost_system.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_system.so'
+ssh root@172.17.0.1 'ln -sf libboost_system.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_system.so.0'
+ssh root@172.17.0.1 'ln -sf libboost_random.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_random.so'
+ssh root@172.17.0.1 'ln -sf libboost_random.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_random.so.0'
+ssh root@172.17.0.1 'ln -sf libboost_date_time.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_date_time.so'
+ssh root@172.17.0.1 'ln -sf libboost_date_time.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_date_time.so.0'
+ssh root@172.17.0.1 'sync'
+ssh root@172.17.0.1 'rorfs'
+

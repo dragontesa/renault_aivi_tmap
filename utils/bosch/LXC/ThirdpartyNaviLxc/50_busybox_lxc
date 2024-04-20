@@ -1,0 +1,9 @@
+#!/bin/sh
+DEVICE=root@172.17.0.1
+ssh $DEVICE 'rwrfs'
+ssh $DEVICE 'chmod o+x /bin/bash'
+ssh $DEVICE 'chmod o+x /bin/busybox.nosuid'
+ssh $DEVICE 'chmod o+x /bin/su'
+ssh $DEVICE 'sync'
+ssh $DEVICE 'rorfs'
+

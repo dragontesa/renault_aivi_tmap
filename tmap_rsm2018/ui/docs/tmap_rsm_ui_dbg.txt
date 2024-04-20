@@ -1,0 +1,2 @@
+alias dbglog='~/tmap_rsm_ui_dbg.sh'
+alias dbgclr='truncate -s0 ~/tmap_rsm_ui_dbg.log;clear;dbglog'

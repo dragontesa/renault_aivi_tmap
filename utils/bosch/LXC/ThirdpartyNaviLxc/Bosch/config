@@ -1,0 +1,145 @@
+# Device node section:
+# Generic
+lxc.mount.entry = /dev/tty dev/tty    none bind,optional,create=file 0 0
+lxc.mount.entry = /dev/console dev/console    none bind,optional,create=file 0 0
+lxc.mount.entry = /dev/tty0 dev/tty0    none bind,optional,create=file 0 0
+lxc.mount.entry = /dev/tty1 dev/tty1    none bind,optional,create=file 0 0
+lxc.mount.entry = /dev/null dev/null    none bind,optional,create=file 0 0
+lxc.mount.entry = /dev/urandom dev/urandom    none bind,optional,create=file 0 0
+lxc.mount.entry = /dev/errmem dev/errmem    none bind,optional,create=file 0 0
+lxc.mount.entry = /dev/random dev/random    none bind,optional,create=file 0 0
+lxc.mount.entry = none dev/shm tmpfs rw,nosuid,nodev,create=dir
+lxc.mount.entry = /etc/resolv-container.conf etc/resolv.conf none ro,bind,create=file 0 0
+# Audio
+lxc.mount.entry = /dev/snd/controlC2 dev/snd/controlC2  none bind,optional,create=file 0 0
+lxc.mount.entry = /dev/snd/pcmC2D0p dev/snd/pcmC2D0p none bind,optional,create=file 0 0
+lxc.mount.entry = /dev/snd/pcmC2D1p dev/snd/pcmC2D1p none bind,optional,create=file 0 0
+# Graphics
+lxc.mount.entry = /dev/mxc_vpu dev/mxc_vpu    none bind,optional,create=file 0 0
+lxc.mount.entry = /dev/galcore dev/galcore    none bind,optional,create=file 0 0
+lxc.mount.entry = /dev/dri/card0 dev/dri/card0    none bind,optional,create=file 0 0
+
+lxc.mount.entry = /dev/crypto dev/crypto none bind,optional,create=file 0 0
+
+
+# network
+lxc.network.type = veth
+lxc.network.link = brwan
+lxc.network.flags = up
+lxc.network.ipv4 = 10.19.229.142/25
+lxc.network.name = extnav-e
+lxc.network.ipv4.gateway= 10.19.229.129
+
+# Dropping of capabilities
+lxc.cap.keep = setuid setgid
+
+# Memory limit: 500 MB
+lxc.cgroup.memory.limit_in_bytes = 800M
+lxc.cgroup.memory.memsw.limit_in_bytes = 800M
+
+# Rootfs section:
+lxc.rootfs = /var/lib/lxc/extnav/rootfs
+
+# UTS section:
+lxc.utsname = extnav
+
+# Configuration section:
+lxc.tty = 1
+lxc.pts = 1
+lxc.mount.auto = cgroup:mixed proc:mixed sys:mixed
+lxc.haltsignal = SIGRTMIN+3
+lxc.rebootsignal = SIGTERM
+
+#lxc.seccomp = /etc/seccomp/lxc_deny.conf
+
+# TMPFS creation section:
+lxc.mount.entry = tmpfs tmp tmpfs size=1M 0 0
+
+# TMPFS section
+lxc.mount.entry = /tmp/shared/extnav_lcm tmp/shared/extnav_lcm none rw,bind,create=dir 0 0
+lxc.mount.entry = /tmp/shared/iddbus tmp/shared/iddbus none rw,bind,create=dir 0 0
+lxc.mount.entry = /tmp/shared/dlt tmp/shared/dlt none rw,bind,create=dir 0 0
+
+# Mount for graphic
+lxc.mount.entry = /tmp/shared/lmanager tmp/shared/lmanager none rw,bind,create=dir 0 0
+lxc.mount.entry = /tmp/shared/lmanager/wayland-0 tmp/wayland-0 none rw,bind,create=file 0 0
+
+# Must be activated as soon as HMI base has delivered changes; must be ro
+lxc.mount.entry = /tmp/shared/gadgetsync tmp/shared/gadgetsync none ro,bind,create=dir 0 0
+
+# ****************************************************************************************************************************
+# Bind mount section:
+# In this section folders of the native RFS are bind mount to container RFS folders. Later on during hardening of your container
+# these lines must be removed and instead hardlinks to the required libraries/binaries are used.
+# If you would like to bind mount a folder with your binaries to the container, you can add a line here.
+# E.g. if the agent binaries are stored in /opt/bosch/agent_media then you can here the line
+# lxc.mount.entry = /opt/bosch/agent_media opt/bosch/agent_media none ro,bind 0 0
+# In this case you have to create the folder in the folder section of the XML package file. (see above)
+# ****************************************************************************************************************************
+lxc.mount.entry = /bin bin none ro,bind 0 0
+lxc.mount.entry = /lib lib none ro,bind 0 0
+lxc.mount.entry = /sbin sbin none ro,bind 0 0
+lxc.mount.entry = /usr/bin usr/bin none ro,bind 0 0
+lxc.mount.entry = /usr/lib usr/lib none ro,bind 0 0
+lxc.mount.entry = /usr/sbin usr/sbin none ro,bind 0 0
+lxc.mount.entry = /etc/alternatives etc/alternatives none ro,bind 0 0
+lxc.mount.entry = /opt/bosch/lxc opt/bosch/lxc none ro,bind 0 0
+
+# Debug
+lxc.mount.entry = /tmp/shared/debug tmp/shared/debug none rw,bind,create=dir 0 0
+lxc.mount.entry = /dev/log dev/log none bind,optional,create=file 0 0
+# Debug
+lxc.environment = ISOINIT_LOGFILE=/tmp/shared/debug/isoinit_extnav.log
+lxc.environment = ISOINIT_LOGLEVEL=6
+lxc.loglevel=0
+lxc.logfile=/tmp/shared/debug/lxc_extnav.log
+
+
+
+# Mount for third party navigation
+lxc.mount.entry = /opt/bosch/extnav opt/bosch/extnav none rw,bind 0 0
+lxc.mount.entry = /opt/bosch/hmibase/lib opt/bosch/hmibase/lib none ro,bind 0 0
+lxc.mount.entry = /opt/bosch/navigation_kor opt/bosch/navigation_kor none rw,bind 0 0
+lxc.mount.entry = /var/opt/bosch/dynamic/navigation_kor/ var/opt/bosch/dynamic/navigation_kor/ none rw,bind 0 0
+lxc.mount.entry = /var/opt/bosch/navdata/ var/opt/bosch/navdata/ none ro,bind 0 0
+lxc.mount.entry = /usr/lib/qt5 usr/lib/qt5 none ro,bind 0 0
+
+
+# Mount for Audio
+lxc.mount.entry = /etc/asound.lxc_extnav.conf etc/asound.project.conf none ro,bind 0 0
+#lxc.mount.entry = /usr/lib/alsa-lib usr/lib/alsa-lib none ro,bind 0 0
+lxc.mount.entry = /usr/share/alsa usr/share/alsa none ro,bind 0 0
+
+# Bind mount sensor sockets into container
+#lxc.mount.entry = /tmp/sock_gnss tmp/sock_gnss none ro,bind,create=file 0 0
+lxc.mount.entry = /tmp/sock_sensors tmp/sock_sensors none ro,bind,create=file 0 0
+
+# Mount for Hotplug Device
+lxc.mount.entry = /media media none ro,rbind,create=dir 0 0 
+
+# Root user/group mapping section
+lxc.id_map = u 0 1200000 10
+lxc.id_map = g 0 1200000 10
+
+# Own user/group mapping section
+lxc.id_map = u 9025 9025 1
+lxc.id_map = g 9025 9025 1
+
+# User/group mapping section
+lxc.id_map = g 2140 2140 1
+lxc.id_map = g 4000 4000 1
+
+# The groups vpu, graphics and drm are mapped 1:1
+lxc.id_map = g 2080 2080 3
+
+# The group of Audio
+lxc.id_map = g 29 29 1
+
+# The sensors for GNSS, Gyro, ACCL, Odometer
+lxc.id_map = g 9002 9002 1
+
+# shell
+lxc.id_map = g 2002 2002 1
+# busynosuid
+lxc.id_map = g 2120 2120 1
+

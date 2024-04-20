@@ -1,0 +1,68 @@
+#!/bin/sh
+if [ ! $# -gt 0 ]; then
+	echo "type source and target"
+	exit 1
+fi
+if [ ! $# -gt 1 ]; then
+	echo "type target to distribute"
+	exit 1
+fi
+
+SRC=$1
+DST=$2
+PKG=$3
+
+if [ ! -d $SRC ]; then
+	echo "not found such files or directory $SRC"
+	exit 1
+fi
+
+DIRPKG=$DST/$PKG/artefacts
+## CREATE DIRECTORY STRUCTURE GET PAKAGE
+if [ ! -d $DIRPKG ]; then
+	mkdir -p $DIRPKG
+fi
+
+mkdir $DIRPKG/bin
+mkdir $DIRPKG/lib
+mkdir $DIRPKG/res
+
+cp -vf $SRC/thirdpartynavigation_out.out $DIRPKG/bin
+cp -vf $SRC/ui/release/libtmap_rsm_ui.so $DIRPKG/lib
+cp -vf $SRC/ndds/release/libnddssdk.so $DIRPKG/lib
+cp -vf $SRC/vsmsdk/build/qtcreator_vsm_sdk/build/libvsmsdk.so $DIRPKG/lib
+prj=$(echo `grep -ir "Project:" $SRC/Makefile` | grep -oP '\S\..+\/')
+cp -vf $SRC/${prj}vsmsdk/build/qtcreator_vsm_sdk/tts/linux-gen3/lib/lib* $DIRPKG/lib
+cp -vf $SRC/${prj}mnssdk/lib/linux-gen3/release/*.so $DIRPKG/lib
+#cp -f $SRC/${prj}platforms/linux-gen3/interface/ALSA/lib/*.so.*.* $DIRPKG/lib
+cp -rf $SRC/${prj}ui/res $DIRPKG/
+
+## tar zip
+#archive=$(echo $DST | grep -oP '\w.+\/')
+#archive=$(echo $archive | grep -oP '\w.+\w')
+cd $DST
+echo "writing note ..."
+echo "=================================================" >> $PKG/pkgnote.txt
+echo "Packaging Note!" >> $PKG/pkgnote.txt
+echo ' (((   '${PKG}'   )))' >> $PKG/pkgnote.txt
+echo "=================================================" >> $PKG/pkgnote.txt
+ls -lt $PKG/* >> $PKG/pkgnote.txt
+echo "----------------------------------------------------" >> $PKG/pkgnote.txt
+ls -lt $PKG/artefacts/bin >> $PKG/pkgnote.txt
+echo "----------------------------------------------------" >> $PKG/pkgnote.txt
+ls -lt $PKG/artefacts/lib >> $PKG/pkgnote.txt
+echo "----------------------------------------------------" >> $PKG/pkgnote.txt
+ls -lt $PKG/artefacts/res >> $PKG/pkgnote.txt
+echo "----------------------------------------------------" >> $PKG/pkgnote.txt
+du -sh $PKG/*   >> $PKG/pkgnote.txt
+
+echo "packaing ...."
+echo "..."
+echo "..."
+tar cvzf $PKG.tar.gz --directory=$DST $PKG
+
+echo "cleaning ..."
+echo "..."
+rm -rf $PKG/artefacts
+cd -
+echo "done success !"

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" 
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/com/bosch/DrPositionService">
+
+  <!--=========================================================================================================================
+      Navigation INTERFACE version: check "DrPosInterface.h"
+      ======================================================
+      History: Date       | version | what
+               2017/04/11 | 1.1     | MapMatchingFeedback:   New function
+               2017/05/12 | 1.2     | ProxyPositionGNSS:     Altitude delivered as signed integer
+                                    | ProxyDeadReckPosition: Added acceleration & error
+               2017/06/13 | 1.3     | Documentation updated
+               2017/06/29 | 1.4     | ProxyDeadReckPosition: Added DrInfoValidity
+               2018/01/09 | 1.4.2   | SetNextStartPosition:  New method to set DR start location
+               2018/08/22 | 1.5.0   | ProxyDetailedGNSS:     New signal to retrieve detailed GNSS information like $GPGSS
+                                    | ProxyMountingAngles:   New signal to return computed angles between sensor chip and car
+                                    | ProxyMapMatchingEcho:  New signal to echo MMFB data back on D-Bus
+  ============================================================================================================================-->
+  <interface name="com.bosch.DrPositionService.Navigation">
+    <!-- slots -->
+    <method name="GetPositionVersion">
+      <doc><line>This method returns the API version implemented by the server application</line></doc>
+      <arg name="Version" type="(qqqs)" direction="out"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="VersionInfo"/>
+    </method>
+
+    <method name="MapMatchingFeedback">
+      <arg name="Timestamp" type="u" direction="in"/>
+      <arg name="Candidates" type="a(ddyyny)" direction="in"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="MMCandidateList"/>
+      <arg name="OffroadCandidate" type="(ddyyny)" direction="in"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In2" value="MMCandidate"/>
+    </method>
+
+    <method name="SetNextStartPosition">
+      <arg name="Longitude" type="d" direction="in"/>
+      <arg name="Latitude" type="d" direction="in"/>
+      <arg name="Heading" type="i" direction="in"/>
+    </method>
+
+    <!-- signals -->
+    <signal name="ProxyMountingAngles">
+       <arg name="AngRX" type="y"/>
+       <arg name="AngRY" type="y"/>
+       <arg name="AngRZ" type="y"/>
+       <arg name="AngSX" type="y"/>
+       <arg name="AngSY" type="y"/>
+       <arg name="AngSZ" type="y"/>
+       <arg name="AngTX" type="y"/>
+       <arg name="AngTY" type="y"/>
+       <arg name="AngTZ" type="y"/>
+       <arg name="Status" type="y"/>
+       <arg name="Reserved1" type="u"/>
+       <arg name="Reserved2" type="u"/>
+    </signal>
+
+    <signal name="ProxyPositionGNSS">
+       <arg name="Timestamp" type="u"/>
+       <arg name="Year" type="q"/>
+       <arg name="Month" type="y"/>
+       <arg name="Day" type="y"/>
+       <arg name="Hour" type="y"/>
+       <arg name="Minute" type="y"/>
+       <arg name="Second" type="y"/>
+       <arg name="FixStatus" type="y"/>
+       <arg name="Longitude" type="d"/>
+       <arg name="Latitude" type="d"/>
+       <arg name="Altitude" type="n"/>
+       <arg name="PDOP" type="d"/>
+       <arg name="HDOP" type="d"/>
+    </signal>
+
+    <signal name="ProxyDetailsGNSS">
+      <arg name="Timestamp" type="u"/>
+      <arg name="SatellitesUsed" type="q"/>
+      <arg name="Speed" type="q"/>
+      <arg name="Heading" type="q"/>
+      <arg name="SpaceVehicles" type="a(qqqqq)"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In4" value="SvList"/>
+    </signal>
+
+    <signal name="ProxyDeadReckPosition">
+       <arg name="Timestamp" type="u"/>
+       <arg name="TimePosix" type="u"/>
+       <arg name="Longitude" type="d"/>
+       <arg name="Latitude" type="d"/>
+       <arg name="PosErrCepLarge" type="i"/>
+       <arg name="PosErrCepSmall" type="i"/>
+       <arg name="PosErrCepHeading" type="i"/>
+       <arg name="Heading" type="i"/>
+       <arg name="HeadingError" type="i"/>
+       <arg name="Turnrate" type="d"/>
+       <arg name="TurnrateError" type="d"/>
+       <arg name="Speed" type="n"/>
+       <arg name="SpeedError" type="n"/>
+       <arg name="Acceleration" type="n"/>
+       <arg name="AccelerationError" type="n"/>
+       <arg name="Height" type="i"/>
+       <arg name="HeightError" type="i"/>
+       <arg name="SensorFlags" type="q"/>
+       <arg name="DrInfoValidity" type="q"/>
+    </signal>
+
+  </interface>
+</node>

@@ -1,0 +1,2 @@
+#!/bin/sh
+dbus-monitor --address unix:path=/tmp/shared/iddbus/lxcdbus path=/bosch/gui/cm/ai/guicontrol

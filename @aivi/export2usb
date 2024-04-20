@@ -1,0 +1,8 @@
+#!/bin/sh
+rwrfs
+umount /dev/media/AAM_dev_sda
+mount -rw /dev/media/AAM_dev_sda
+NOW=$(date +'%Y%m%d-%H%M%S')
+DSTDIR="export_log_"$NOW
+mkdir /dev/media/AAM_dev_sda/$DSTDIR
+cp /var/opt/bosch/dynamic/navigation_kor/log/* /dev/media/AAM_dev_sda/$DSTDIR

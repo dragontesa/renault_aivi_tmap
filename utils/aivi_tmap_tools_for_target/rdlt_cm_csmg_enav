@@ -1,0 +1,2 @@
+#!/bin/sh
+dlt-control -u -l 6 -a ENAV -c CSMG

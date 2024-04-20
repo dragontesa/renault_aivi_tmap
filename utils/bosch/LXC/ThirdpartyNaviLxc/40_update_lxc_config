@@ -1,0 +1,11 @@
+#!/bin/sh
+DEVICE=root@172.17.0.1
+ssh $DEVICE 'systemctl stop rbcm-navigationhall_ext_korea.service'
+ssh $DEVICE 'systemctl stop rbcm-lxc-extnav.service'
+ssh $DEVICE 'rwrfs'
+# update config
+echo "updating extnav lxc config file .."
+ssh $DEVICE 'rm -rf /var/lib/lxc/extnav/* && sync'
+scp Bosch/config $DEVICE:/var/lib/lxc/extnav/
+ssh $DEVICE 'sync'
+ssh $DEVICE 'reboot -f'

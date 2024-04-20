@@ -1,0 +1,38 @@
+#!/bin/sh
+if [ ! $# -gt 0 ]; then
+	echo "type source and target"
+	exit 1
+fi
+if [ ! $# -gt 1 ]; then
+	echo "type target to distribute"
+	exit 1
+fi
+
+SRC=$1
+DST=$2
+if [ ! -d $SRC ]; then
+	echo "not found such files or directory $SRC"
+	exit 1
+fi
+
+if [ ! -d $DST ]; then
+	mkdir -p $DST
+	mkdir $DST/bin
+	mkdir $DST/lib
+	mkdir $DST/res
+fi
+
+cp -f $SRC/thirdpartynavigation_out.out $DST/bin
+cp -f $SRC/ui/release/libtmap_rsm_ui.so $DST/lib
+cp -f $SRC/ndds/release/libnddssdk.so $DST/lib
+cp -f $SRC/vsmsdk/build/qtcreator_vsm_sdk/build/libvsmsdk.so $DST/lib
+prj=$(echo `grep -ir "Project:" $SRC/Makefile` | grep -oP '\S\..+\/')
+cp -f $SRC/${prj}vsmsdk/lib/linux-gen3/release/libvt*.so $DST/lib
+cp -f $SRC/${prj}mnssdk/lib/linux-gen3/release/*.so $DST/lib
+cp -f $SRC/${prj}platforms/linux-gen3/interface/ALSA/lib/*.so.*.* $DST/lib
+cp -rf $SRC/${prj}ui/res $DST/
+## tar zip
+#archive=$(echo $DST | grep -oP '\w.+\/')
+#archive=$(echo $archive | grep -oP '\w.+\w')
+#tar -cjf $DST/../tmap_release_gen3_
+echo "success ~"

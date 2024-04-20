@@ -1,0 +1,3 @@
+#!/bin/sh
+systemctl status rbcm-lxc-extnav
+systemctl status rbcm-navigationhall_ext_korea

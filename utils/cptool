@@ -1,0 +1,24 @@
+#!/bin/sh
+FROM=/media/sf_DATA0/w0/utils/
+TO=root@172.17.0.1:/home/root/bin
+ssh root@172.17.0.1 'rwrfs'
+ssh root@172.17.0.1 'mkdir -p /home/root/bin'
+
+if [ ! $# -gt 0 ]; then
+scp $FROM/aivi_tmap_tools_for_target/r* $TO
+scp $FROM/r* $TO
+#scp $FROM/showSoftmenu $TO
+#scp $FROM/showSfc103 $TO
+ssh root@172.17.0.1 'cd /home/root/bin && chmod +rx *'
+
+else
+FILES=$1
+scp $FROM/aivi_tmap_tools_for_target/$FILES $TO
+#scp $FROM/showSoftmenu $TO
+#scp $FROM/showSfc103 $TO
+ssh root@172.17.0.1 "chmod +rx /home/root/bin/"$FILES
+fi
+ssh root@172.17.0.1 'sync'
+ssh root@172.17.0.1 'rorfs'
+
+echo "upload tools done !!"

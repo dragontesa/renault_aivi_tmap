@@ -1,0 +1,8 @@
+#!/bin/sh
+cd /lib/systemd/system
+systemctl stop rbcm-apphmi_navigation.service
+rwrfs
+mv rbcm-apphmi_navigation.service 00rbcm-apphmi_navigation.service
+sync
+rorfs
+exit

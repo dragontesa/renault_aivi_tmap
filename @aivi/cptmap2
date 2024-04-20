@@ -1,0 +1,140 @@
+#!/bin/sh
+#default dist directory
+FROM=build-aivi-tmap-gen3-platform
+TO_LIB=root@172.17.0.1:/opt/bosch/navigation_kor/lib
+TO_BIN=root@172.17.0.1:/opt/bosch/extnav/bin
+TO_SYSLIB=root@172.17.0.1:/usr/lib
+TO_RES=root@172.17.0.1:/opt/bosch/navigation_kor/res
+TO_APP=root@172.17.0.1:/opt/bosch/navigation_kor
+prj=$(echo `grep -ir "Project:" $FROM/Makefile` | grep -oP '\S\..+\/')
+
+ssh root@172.17.0.1 'systemctl stop rbcm-lxc-extnav'
+ssh root@172.17.0.1 'systemctl stop rbcm-navigationhall_ext_korea'
+ssh root@172.17.0.1 'rwrfs'
+
+if [ ! $# -gt 0 ] || ([ $1 != "ui" ] && [ $1 != "lib" ] && [ $1 != "update" ] && [ $1 != "dist" ] && [ $1 != "res" ] && [ $1 != "rcc" ]); then
+echo "Type package mode like ui, dist, lib, res, rcc "
+echo " also you can specify file path to upload at second option"
+exit
+fi
+
+# upload from default repo if it has not second option
+if [ ! $# -gt 1 ]; then
+
+if [ $1 = "ui" ] ; then
+ssh root@172.17.0.1 'rm -f /opt/bosch/navigation_kor/lib/libtmap_rsm_ui.so /opt/bosch/navigation_kor/res/*.rcc && sync'
+scp $FROM/${prj}ui/release/libtmap_rsm_ui.so $TO_LIB
+scp $FROM/${prj}ui/res/tmap_rsm_ui_qml.rcc $TO_RES/
+#scp $FROM/../tmap_rsm2018/ui/res/tmap_rsm_ui_qml.rcc $TO_RES/img
+#scp $FROM/../tmap_rsm2018/ui/res/tmap_rsm_ui_qml.rcc $TO_RES/drawable-800x480
+fi
+
+if ( [ $1 = "lib" ] || [ $1 = "dist" ] ); then
+ssh root@172.17.0.1 'cd /opt/bosch/navigation_kor && rm -f lib/libtmap_rsm_ui.so lib/libvsmsdk.so lib/libnddssdk.so lib/libmnssdk.so lib/libvt* && sync'
+#scp $FROM/libthirdpartynavigation_so.so $TO_LIB
+scp $FROM/thirdpartynavigation_out.out $TO_BIN 
+scp $FROM/ndds/release/libnddssdk.so $TO_LIB
+scp $FROM/ui/release/libtmap_rsm_ui.so $TO_LIB
+scp $FROM/vsmsdk/build/qtcreator_vsm_sdk/build/libvsmsdk.so $TO_LIB
+scp $FROM/${prj}mnssdk/lib/linux-gen3/release/* $TO_LIB
+scp $FROM/${prj}vsmsdk/build/qtcreator_vsm_sdk/tts/linux-gen3/lib/lib* $TO_LIB
+scp $FROM/${prj}platforms/linux-gen3/connman/lib/lib*.so $TO_LIB
+scp $FROM/${prj}platforms/linux-gen3/interface/ALSA/lib/*.so.*.*.* $TO_LIB
+ssh root@172.17.0.1 'ln -sf libboost_system.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_system.so'
+ssh root@172.17.0.1 'ln -sf libboost_system.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_system.so.0'
+# ssh root@172.17.0.1 'ln -sf libboost_random.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_random.so'
+# ssh root@172.17.0.1 'ln -sf libboost_random.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_random.so.0'
+ssh root@172.17.0.1 'ln -sf libboost_date_time.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_date_time.so'
+ssh root@172.17.0.1 'ln -sf libboost_date_time.so.1.57.0 /opt/bosch/navigation_kor/lib/libboost_date_time.so.0'
+#scp $FROM/${prj}platforms/linux-gen3/interface/mic/lib/*.so $TO_LIB
+#scp $FROM/${prj}platforms/linux-gen3/interface/mic/lib/*.so.* $TO_LIB
+fi
+
+if ( [ $1 = "res" ] || [ $1 = "dist" ]) ; then
+ssh root@172.17.0.1 'rm -rf /opt/bosch/navigation_kor/res/* && sync'
+scp -r $FROM/${prj}ui/res $TO_RES/..
+#scp -r $FROM/${prj}static/res $TO_RES/..
+fi
+
+if [ $1 = "rcc" ] ; then
+scp $FROM/${prj}ui/res/tmap_rsm_ui_qml.rcc $TO_RES/
+fi
+
+if [ $1 = "update" ] ; then
+ssh root@172.17.0.1 'cd /opt/bosch/navigation_kor && rm -f lib/libtmap_rsm_ui.so lib/libvsmsdk.so lib/libnddssdk.so res/*.rcc /opt/bosch/extnav/* && sync'
+scp $FROM/thirdpartynavigation_out.out $TO_BIN 
+scp $FROM/ndds/release/libnddssdk.so $TO_LIB
+scp $FROM/ui/release/libtmap_rsm_ui.so $TO_LIB
+scp $FROM/vsmsdk/build/qtcreator_vsm_sdk/build/libvsmsdk.so $TO_LIB
+scp $FROM/${prj}ui/res/*.rcc $TO_RES
+fi
+
+else # if directly specified
+FROM=$2
+  if [ $1 = "lib" ]; then
+	ssh root@172.17.0.1 'cd /opt/bosch/navigation_kor && rm -rf lib/libtmap_rsm_ui.so lib/libvsmsdk.so lib/libnddssdk.so lib/libmnssdk.so /opt/bosch/extnav/* && sync'
+        scp -r $FROM/lib/* $TO_LIB
+     if [ -d $FROM/bin ]; then
+              scp $FROM/bin/thirdpartynavigation_out.out $TO_BIN 
+     else
+           scp $FROM/lib/thirdpartynavigation_out.out $TO_BIN 
+     fi
+  elif [ $1 = "res" ]; then
+	ssh root@172.17.0.1 'rm -rf /opt/bosch/navigation_kor/res/* && sync'
+	scp -r $FROM/res $TO_RES/..
+  elif [ $1 = "update" ]; then
+	ssh root@172.17.0.1 'cd /opt/bosch/navigation_kor && rm -rf lib/libtmap_rsm_ui.so lib/libvsmsdk.so lib/libnddssdk.so res/*.rcc /opt/bosch/extnav/* sync'
+     if [ -d $FROM/bin ]; then
+		scp $FROM/bin/thirdpartynavigation_out.out $TO_BIN 
+     else
+           scp $FROM/lib/thirdpartynavigation_out.out $TO_BIN 
+     fi
+     scp $FROM/lib/libtmap_rsm_ui.so $FROM/lib/libnddssdk.so $FROM/lib/libvsmsdk.so $TO_LIB
+     scp $FROM/res/*.rcc $TO_RES
+
+  elif [ $1 = "dist" ]; then
+	ssh root@172.17.0.1 'cd /opt/bosch/navigation_kor && rm -rf lib/libtmap_rsm_ui.so lib/libvsmsdk.so lib/libnddssdk.so lib/libmnssdk.so res/* /opt/bosch/extnav/* && sync'
+     if [ -d $FROM/bin ]; then
+              scp $FROM/bin/thirdpartynavigation_out.out $TO_BIN 
+     else
+           scp $FROM/lib/thirdpartynavigation_out.out $TO_BIN 
+     fi
+
+     scp -r $FROM/lib $TO_LIB/..
+     scp -r $FROM/res $TO_RES/..
+  else 
+     echo "you must only type the lib or res as first one with second option"
+  fi
+
+fi
+
+if [ $1 != "dist" ] ; then
+	ssh root@172.17.0.1 'chmod -R 755 /opt/bosch/extnav' 
+	ssh root@172.17.0.1 'chmod -R +x /opt/bosch/extnav' 
+	ssh root@172.17.0.1 'find /opt/bosch/navigation_kor/lib -type d -exec chmod 755 {} +'
+	ssh root@172.17.0.1 'find /opt/bosch/navigation_kor/lib -type f -exec chmod +r {} +'
+	ssh root@172.17.0.1 'find /opt/bosch/navigation_kor/res -type d -exec chmod 755 {} +'
+	ssh root@172.17.0.1 'find /opt/bosch/navigation_kor/res -type f -exec chmod +r {} +'
+	ssh root@172.17.0.1 'sync'
+	ssh root@172.17.0.1 'rorfs'
+	ssh root@172.17.0.1 'reboot -f'
+	exit
+fi
+
+# set persmission for lxc_extnav
+ssh root@172.17.0.1 'chmod -R 755 /opt/bosch/extnav'
+ssh root@172.17.0.1 'chmod -R +x /opt/bosch/extnav/'
+ssh root@172.17.0.1 'chown lxc_extnav:lxc_extnav /opt/bosch/extnav'
+ssh root@172.17.0.1 'find /var/opt/bosch/navdata -type d -exec chmod 755 {} +'
+ssh root@172.17.0.1 'find /var/opt/bosch/navdata -type f -exec chmod +r {} +'
+ssh root@172.17.0.1 'chown -R lxc_extnav:lxc_extnav /var/opt/bosch/navdata'
+ssh root@172.17.0.1 'find /var/opt/bosch/dynamic/navigation_kor -type d -exec chmod 755 {} +'
+ssh root@172.17.0.1 'find /var/opt/bosch/dynamic/navigation_kor -type f -exec chmod +r {} +'
+ssh root@172.17.0.1 'chown -R lxc_extnav:lxc_extnav /var/opt/bosch/dynamic/navigation_kor'
+ssh root@172.17.0.1 'find /opt/bosch/navigation_kor/lib -type d -exec chmod 755 {} +'
+ssh root@172.17.0.1 'find /opt/bosch/navigation_kor/lib -type f -exec chmod +r {} +'
+ssh root@172.17.0.1 'find /opt/bosch/navigation_kor/res -type d -exec chmod 755 {} +'
+ssh root@172.17.0.1 'find /opt/bosch/navigation_kor/res -type f -exec chmod +r {} +'
+ssh root@172.17.0.1 'sync'
+ssh root@172.17.0.1 'rorfs'
+ssh root@172.17.0.1 'reboot -f'

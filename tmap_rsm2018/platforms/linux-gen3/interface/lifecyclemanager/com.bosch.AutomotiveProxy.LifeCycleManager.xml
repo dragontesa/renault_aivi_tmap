@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<node name="/com/bosch/AutomotiveProxy/LifeCycleManager" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+
+<!--
+ com.bosch.AutomotiveProxy.LifeCycleManager
+ @short_description:  This interface provides mechanism for the clients to
+ register themselves for shutdown/startup notification.
+ @since: 2.0
+-->
+
+<interface name="com.bosch.AutomotiveProxy.LifeCycleManager">
+
+<!--
+ Register:
+ @credentials: Unique identity of the client.
+ @request_id: The request ID of the called client(current request).
+ @request_mode: The type of the life cycle request. #AP_LIFECYCLE_MANAGER_MODE_SHUTDOWNTYPE_NORMAL
+	#AP_LIFECYCLE_MANAGER_MODE_SHUTDOWNTYPE_NORMAL:  Client registered for normal shutdown.
+	Please refer ap-lifecycle-manager-defines.h.
+ @since: 2.0
+
+ This method provides a way for the client to register themselves for shutdown/startup
+ notifcation. Use return value of this method 'request_id' for the subsequent
+ request made to this interface.
+
+ client shall be validated whether passed 'credential' are really matching with the container/domain who
+ made the request.
+
+ Example:
+
+ credentials ->
+ {
+  'Label': 'name_of_the_container'
+   // In the case of container this holds name of the container.
+ }
+-->
+ <method name="Register">
+    <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+    <arg name="credentials" type="a{sv}" direction="in"/>
+    <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="LCMCredentials"/>
+    <arg name="request_mode" type="u" direction="in"/>
+    <arg name="request_id" type="u" direction="out"/>
+ </method>
+
+<!--
+ LifecycleRequest:
+ @mode: Life cycle request mode for which client wants to be informed (#AP_LIFECYCLE_MANAGER_MODE_SHUTDOWNTYPE_NORMAL, #AP_LIFECYCLE_MANAGER_MODE_SHUTDOWNTYPE_RUNUP).
+	The mode type "AP_LIFECYCLE_MANAGER_MODE_SHUTDOWNTYPE_RUNUP" cannot be used for registration.
+	Clients which are registered will automatically be informed about the "run up", first as soon as they register and then when 
+	state transition happens from AP_LIFECYCLE_MANAGER_MODE_SHUTDOWNTYPE_NORMAL to AP_LIFECYCLE_MANAGER_MODE_SHUTDOWNTYPE_RUNUP during one power cycle.
+ @request_id: The request ID of the called client(current request).
+ @since: 2.0
+
+ This signal fires an event whenever client wants to be informed about system
+ shutdown/startup. The parameter 'mode' determines whether signal is for shutdown or startup.
+ This is unicast signal.
+
+ As signals have no return value, every client that has received such a signal has to call the LifecycleRequestComplete
+ method within 7 seconds after closing the open file handler to notify their completion of the request.
+ If the client is not returned within the timeout then automotive gateway ignores that client.
+
+-->
+ <signal name="LifecycleRequest">
+    <arg name="mode" type="u"/>
+    <arg name="request_id" type="u"/>
+ </signal>
+
+<!--
+ LifecycleRequestComplete:
+ @request_id: The request ID of the called client(current request).
+ @since: 2.0
+
+ This method called by the client to indicate that shutdown/startup is completed.
+ After getting LCM state update, via signal LifecycleRequest, client should respond within 7 seconds.
+ 'LifecycleRequest' signal is completed by calling this method.
+ In case of no reponse from registered client, automotive gateway will take internal decision.
+-->
+ <method name="LifecycleRequestComplete">
+    <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+    <arg name="request_id" type="u" direction="in"/>
+ </method>
+
+</interface>
+</node>

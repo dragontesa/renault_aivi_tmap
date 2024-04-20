@@ -1,0 +1,53 @@
+#!/bin/sh
+if [ ! $# -gt 0 ]; then
+   echo "type path to backup !! and you can comment, e.g bcktmap /backup/to/path version1.0"
+   exit
+fi
+
+BCKDIR_ROOT=$1
+comment=$2
+
+echo "backup starting .."
+# backup on remote
+tag=$(date +'%Y%m%dT%H%M%S')
+bckfile=bck_aivi_tmap_${comment}_${tag}
+ssh root@172.17.0.1 'systemctl stop rbcm-lxc-extnav'
+#ssh root@172.17.0.1 'systemctl stop rbcm-navigationhall_ext_korea'
+ssh root@172.17.0.1 'rwrfs'
+#
+#ssh root@172.17.0.1 'export tag=`(date +'%Y%m%dT%H%M%S')` && mkdir "'$bckfile'" && tar czf /home/root/"'$bckfile'"/"'$bckfile'".tar.gz -C /opt/bosch/navigation_kor lib res && cp -rf /opt/bosch/extnav/bin /home/root/"'$bckfile'"'
+ssh root@172.17.0.1 'export tag="'$tag'" && mkdir "'$bckfile'" && cp -rf /opt/bosch/navigation_kor/lib /opt/bosch/navigation_kor/res /opt/bosch/extnav/bin "'$bckfile'"/ && tar czf "'$bckfile'".tar.gz "'$bckfile'"'
+ssh root@172.17.0.1 'sync'
+ssh root@172.17.0.1 'rorfs'
+
+if [ ! -d $BCKDIR_ROOT ]; then
+mkdir -p $BCKDIR_ROOT
+echo "backup directory to: $BCKDIR_ROOT"
+fi
+
+# download
+echo "download backup file ..."
+scp root@172.17.0.1:/home/root/$bckfile.tar.gz $BCKDIR_ROOT
+ssh root@172.17.0.1 'rwrfs'
+ssh root@172.17.0.1 'rm -f /home/root/"'$bckfile'".tar.gz && rm -rf /home/root/"'$bckfile'" && sync'
+ssh root@172.17.0.1 'rorfs'
+echo "backup done!"
+exit 0
+
+# create backup dirs under $BCKDIR_ROOT
+BCKNAME=$bckfile
+BCKDIR=$BCKDIR_ROOT/$BCKNAME
+mkdir $BCKDIR
+mkdir $BCKDIR/bin
+mkdir $BCKDIR/lib
+mkdir $BCKDIR/res
+mkdir $BCKDIR/data
+# download
+scp -r root@172.17.0.1:/opt/bosch/navigation_kor/lib $BCKDIR
+scp -r root@172.17.0.1:/opt/bosch/navigation_kor/res $BCKDIR
+scp -r root@172.17.0.1:/opt/bosch/extnav/bin/* $BCKDIR/bin
+scp -r root@172.17.0.1:/var/opt/bosch/dynamic/navigation_kor/* $BCKDIR/data
+# tar archive
+tar czf $BCKDIR_ROOT/${BCKNAME}.tar.gz --directory=$BCKDIR_ROOT $BCKNAME
+
+echo "backup done! to $BCKDIR"

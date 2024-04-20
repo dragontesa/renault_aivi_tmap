@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="introspect.xsd" name="org.bosch.cm.navigation">
+  <interface name="org.bosch.cm.navigation.NavigationSDSService">
+<!--    <property access="read" name="mapUpdateRequested" type="b"/>-->
+<!--    <property access="read" name="handOverSessionStatus" type="(bb)"/>-->
+    <property access="read" name="positionStatusInfo" type="((dd)ssudd)">
+      <annotation name="org.qtproject.QtDBus.QtTypeName" value="NSPositionStatusInfo"/>
+    </property>
+    <property access="read" name="positionInfo" type="(ssssss(suq)(suq)(suq)(suq)(suq)(suq)(suq))">
+      <annotation name="org.qtproject.QtDBus.QtTypeName" value="NSPositionInfo"/>
+    </property>
+    <property access="read" name="sdsAddressWithOptions" type="(a(us(b))(bbbbbb)au)">
+      <annotation name="org.qtproject.QtDBus.QtTypeName" value="NSSDSAddressWithOptions"/>
+    </property>
+<!--    <property access="read" name="sdsVoiceTagWithOptions" type="(tsuu)"/>-->
+<!--    <property access="read" name="navDatasetInfo" type="(us(uuu))"/>-->
+<!--    <property access="readwrite" name="dynamicMapPoiCategoryWithLanguage" type="(a(sub)(sss))"/>-->
+<!--    <method name="getGlobalDataForSds">
+      <doc>
+        <line>getGlobalDataForSds = Method to get the SDS specific nds data</line>
+      </doc>
+      <arg direction="out" name="deviceName" type="s">
+        <doc>
+          <line>deviceName = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="datasetId" type="u">
+        <doc>
+          <line>datasetId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="persistentDatasetId" type="s">
+        <doc>
+          <line>persistentDatasetId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="sdsProductsList" type="a(yua(qa(qusu(bb(ua(qs))(ua(qs)))yu)a(qss))a(qsss(sss)qq))">
+        <doc>
+          <line>sdsProductsList = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="updateRegionSpecifierRelationsList" type="a(qyuq)">
+        <doc>
+          <line>updateRegionSpecifierRelationsList = Description missing</line>
+        </doc>
+      </arg>
+    </method>-->
+<!--    <method name="getIdListOfCountryAndSubCountry">
+      <doc>
+        <line>getIdListOfCountryAndSubCountry = Method to get the list of object ids for all countries and subcountries</line>
+      </doc>
+      <arg direction="out" name="countryIdList" type="a((nin)utu)">
+        <doc>
+          <line>countryIdList = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="subCountryIdList" type="a(((nin)u)a((nin)utu))">
+        <doc>
+          <line>subCountryIdList = Description missing</line>
+        </doc>
+      </arg>
+    </method>-->
+<!--    <method name="getIdListOfCountryAndSubCountryWithCountryCode">
+      <doc>
+        <line>getIdListOfCountryAndSubCountryWithCountryCode = Method to get the list of object ids for all countries and subcountries with country ID supported</line>
+      </doc>
+      <arg direction="out" name="countryIdList" type="a(s((nin)utu))">
+        <doc>
+          <line>countryIdList = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="subCountryIdList" type="a(((nin)ub)a((nin)utu))">
+        <doc>
+          <line>subCountryIdList = Description missing</line>
+        </doc>
+      </arg>
+    </method>-->
+<!--    <method name="getNamesForNDSIds">
+      <doc>
+        <line>getNamesForNDSIds = Method to get the named strings for given list of object ids</line>
+      </doc>
+      <arg direction="in" name="globalNamedObjectIdList" type="a((nin)u)">
+        <doc>
+          <line>globalNamedObjectIdList = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="languageEntryList" type="a(sss)">
+        <doc>
+          <line>languageEntryList = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="ndsFeatureType" type="u">
+        <doc>
+          <line>ndsFeatureType (of type NDSFeatureType) = Description missing</line>
+          <line>enum[NAMEDOBJECT (null), POI_NAME (null), POI_CATEGORY (null), POI_ATTRIBUTE (null)]</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="stopOnFirstMatch" type="b">
+        <doc>
+          <line>stopOnFirstMatch = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="namedObjectIdStringsList" type="a(((nin)u)(sss)asu)">
+        <doc>
+          <line>namedObjectIdStringsList = Description missing</line>
+        </doc>
+      </arg>
+    </method>-->
+<!--    <method name="getPhonemesForNDSIds">
+      <doc>
+        <line>getPhonemesForNDSIds = Method to get the phonemes for given list of object ids</line>
+      </doc>
+      <arg direction="in" name="globalNamedObjectIdList" type="a((nin)u)">
+        <doc>
+          <line>globalNamedObjectIdList = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="languageEntryList" type="a(sss)">
+        <doc>
+          <line>languageEntryList = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="ndsFeatureType" type="u">
+        <doc>
+          <line>ndsFeatureType (of type NDSFeatureType) = Description missing</line>
+          <line>enum[NAMEDOBJECT (null), POI_NAME (null), POI_CATEGORY (null), POI_ATTRIBUTE (null)]</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="stopOnFirstMatch" type="b">
+        <doc>
+          <line>stopOnFirstMatch = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="namedObjectIdStringsList" type="a(((nin)u)(sss)asu)">
+        <doc>
+          <line>namedObjectIdStringsList = Description missing</line>
+        </doc>
+      </arg>
+    </method>-->
+<!--    <method name="getCityHasStreets">
+      <doc>
+        <line>getCityHasStreets = Method to get the availability of streets for the given list of city NDS ids</line>
+      </doc>
+      <arg direction="in" name="globalNamedObjectIdList" type="a((nin)u)">
+        <doc>
+          <line>globalNamedObjectIdList = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="cityNamedObjectIdHasStreetsList" type="a(((nin)u)b)">
+        <doc>
+          <line>cityNamedObjectIdHasStreetsList = Description missing</line>
+        </doc>
+      </arg>
+    </method>-->
+<!--    <method name="ndsDatasetReleased">
+      <doc>
+        <line>ndsDatasetReleased = Method to be triggered when sds has released the nds dataset.This will be triggered when attribute mapUpdateRequested is sent as TRUE by the HMI</line>
+      </doc>
+    </method>-->
+<!--    <method name="getHapticHandOverData">
+      <doc>
+        <line>getHapticHandOverData = Request will get handover screen and data along with location type and address options.</line>
+      </doc>
+      <arg direction="out" name="sdsHandOverScreenId" type="u">
+        <doc>
+          <line>sdsHandOverScreenId (of type SDSHandOverScreenId) = Description missing</line>
+          <line>enum[NAVI_FREE_TEXT_SEARCH_ADDRESS (null), NAVI_FREE_TEXT_SEARCH_POI (null), NAVI_ENTER_COUNTRY (null), NAVI_ENTER_STATE (null), NAVI_HNOFIRST_HNO (null), NAVI_HNOFIRST_STREET (null), NAVI_HNOFIRST_STREET_CITY (null), NAVI_CITYFIRST_CITY (null), NAVI_CITYFIRST_CITY_STREET (null), NAVI_CITYFIRST_HNO (null), NAVI_CITYFIRST_HNO_STREET (null), NAVI_CITYFIRST_STREET_HNO (null), NAVI_AMBIG_ADDRESS (null), NAVI_SETDEST_ADDRESS (null), NAVI_CITYCENTER_CITY (null), NAVI_CITYCENTER_STATE (null), NAVI_AMBIG_CITYCENTER (null), NAVI_SETDEST_CITYCENTER (null), NAVI_INTERSECTION_STREET1 (null), NAVI_INTERSECTION_STREET2 (null), NAVI_INTERSECTION_CITY (null), NAVI_INTERSECTION_STATE (null), NAVI_INTERSECTION_COUNTRY (null), NAVI_INTERSECTION_LIST (null), NAVI_SETDEST_INTERSECTION (null), NAVI_POI (null), NAVI_POI_CATEGORY (null), NAVI_POI_LIST (null), NAVI_POI_INCITY (null), NAVI_POI_ENTER_STATE (null), NAVI_POI_ENTER_COUNTRY (null), NAVI_SETDEST_POI (null), NAVI_STREET_ADDRESS_WITHOUT_STATE_INTERSECTION (null), NAVI_FORM_WITHOUT_STATE (null), NAVI_INACTIVE_SCREEN (255)]</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="dataList" type="as">
+        <doc>
+          <line>dataList = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="selectedDataListItems" type="a(us)">
+        <doc>
+          <line>selectedDataListItems = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="locationType" type="u">
+        <doc>
+          <line>locationType (of type LocationType) = Description missing</line>
+          <line>enum[DEFAULT (null), NEAR_CURRENT_LOCATION (null), ALONG_ROUTE (null), NEARBY_DESTINATION (null)]</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="sdsHandOverOptionsList" type="a(bbbbb)">
+        <doc>
+          <line>sdsHandOverOptionsList = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="searchResults" type="a(stssu)">
+        <doc>
+          <line>searchResults = Description missing</line>
+        </doc>
+      </arg>
+    </method>-->
+<!--    <method name="selectHapticHandOverList">
+      <doc>
+        <line>selectHapticHandOverList = Request will send the selected index from the HMI list.</line>
+      </doc>
+      <arg direction="in" name="index" type="u">
+        <doc>
+          <line>index = Description missing</line>
+        </doc>
+      </arg>
+    </method>-->
+<!--    <method name="getDynamicPoiIconCategoriesInMap">
+      <doc>
+        <line>getDynamicPoiIconCategoriesInMap = Returns the currently available POI icon categories in map</line>
+      </doc>
+      <arg direction="out" name="dynamicMapPoiCategory" type="a(sub)">
+        <doc>
+          <line>dynamicMapPoiCategory = Description missing</line>
+        </doc>
+      </arg>
+    </method>-->
+    <method name="getMaxWaypointCount">
+      <doc>
+        <line>getMaxWaypointCount = Returns max number of waypoint base on project variant</line>
+      </doc>
+      <arg direction="out" name="maxWayPointCount" type="u">
+        <doc>
+          <line>maxWayPointCount = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+<!--    <method name="setDynamicPoiIconCategoriesInMap">
+      <doc>
+        <line>setDynamicPoiIconCategoriesInMap = Request to show POI icons on map.</line>
+      </doc>
+      <arg direction="in" name="dynamicMapPoiCategory" type="a(sub)">
+        <doc>
+          <line>dynamicMapPoiCategory = Description missing</line>
+        </doc>
+      </arg>
+    </method>-->
+    <method name="sdsCheckAddress">
+      <doc>
+        <line>sdsCheckAddress = Request will validate the given address,</line>
+        <line>as result it update the attribute sdsAddressWithOptions</line>
+      </doc>
+      <arg direction="in" name="requestedAddress" type="a(us(b))">
+        <doc>
+          <line>requestedAddress = Description missing</line>
+        </doc>
+      </arg>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="NSSDSAddress"/>
+    </method>
+    <method name="sdsGetRefinementList">
+      <doc>
+        <line>sdsGetRefinementList = Request will get refinement list for the validated address</line>
+      </doc>
+      <arg direction="in" name="sdsAddressElementType" type="u">
+        <doc>
+          <line>sdsAddressElementType (of type SDSAddressElementType) = Description missing</line>
+          <line>enum[SDS_ADDRESS_ELEMENT_TYPE_COUNTRY (null), SDS_ADDRESS_ELEMENT_TYPE_PLACE (null), SDS_ADDRESS_ELEMENT_TYPE_ROAD (null), SDS_ADDRESS_ELEMENT_TYPE_CROSSROAD (null), SDS_ADDRESS_ELEMENT_TYPE_HOUSENUMBER (null), SDS_ADDRESS_ELEMENT_TYPE_POSTALDISTRICT (null), SDS_ADDRESS_ELEMENT_TYPE_CITYDESTRICT (null), SDS_ADDRESS_ELEMENT_TYPE_PLACEREFINEMENT (null), SDS_ADDRESS_ELEMENT_TYPE_ROADREFINEMENT (null), SDS_ADDRESS_ELEMENT_TYPE_STATE (null)]</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="refinements" type="a(susu)">
+        <doc>
+          <line>refinements = Description missing</line>
+        </doc>
+      </arg>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="NSRefinementWithIdInfos"/>
+    </method>
+<!--    <method name="sdsUpdateVoiceTag">
+      <doc>
+        <line>sdsUpdateVoiceTag = Method used to store/delete the VoiceTagId in the destination memory database</line>
+      </doc>
+      <arg direction="in" name="voiceTagID" type="(tsuu)">
+        <doc>
+          <line>voiceTagID = Description missing</line>
+        </doc>
+      </arg>
+    </method>-->
+    <method name="sdsGetHouseNumberPattern">
+      <doc>
+        <line>sdsGetHouseNumberPattern = Request will get house number patterns and the minimum and maximum values of the current SDSAddress</line>
+      </doc>
+      <arg direction="out" name="minHouseNumber" type="s">
+        <doc>
+          <line>minHouseNumber = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="maxHouseNumber" type="s">
+        <doc>
+          <line>maxHouseNumber = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="patterns" type="as">
+        <doc>
+          <line>patterns = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="selectSdsRefinement">
+      <doc>
+        <line>selectSdsRefinement = Request will select the refinement with the id from refinement list and add internal to SDSAddress.</line>
+        <line>As result it update the attribute sdsAddressWithOptions</line>
+      </doc>
+      <arg direction="in" name="id" type="u">
+        <doc>
+          <line>id = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setLocationWithSdsInput">
+      <doc>
+        <line>setLocationWithSdsInput = Request will set the SDS Address as destination or waypoint</line>
+      </doc>
+    </method>
+<!--    <method name="requestAddressFormatForAvailableCountries">
+      <doc>
+        <line>requestAddressFormatForAvailableCountries = Request for Address format for all the available countries in Navigation Data</line>
+      </doc>
+      <arg direction="out" name="addressFormatInfos" type="a(ss)">
+        <doc>
+          <line>addressFormatInfos = Description missing</line>
+        </doc>
+      </arg>
+    </method>-->
+<!--    <method name="sdsShowReachableAreaMap">
+      <doc>
+        <line>sdsShowReachableAreaMap = Request navigation to show driving range on map and contextSwitch</line>
+      </doc>
+      <arg direction="in" name="locationType" type="u">
+        <doc>
+          <line>locationType (of type LocationType) = Description missing</line>
+          <line>enum[DEFAULT (null), NEAR_CURRENT_LOCATION (null), ALONG_ROUTE (null), NEARBY_DESTINATION (null)]</line>
+        </doc>
+      </arg>
+    </method>-->
+<!--    <method name="sdsDatasetUserRegistration">
+      <doc>
+        <line>sdsDatasetUserRegistration = Request navigation to register for dataset user</line>
+      </doc>
+      <arg direction="in" name="ndsDataSetUser" type="u">
+        <doc>
+          <line>ndsDataSetUser (of type NdsDatasetUser) = Description missing</line>
+          <line>enum[NDS_DATASET_USER__SDS (0), NDS_DATASET_USER__UNKNOWN (null)]</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="datasetId" type="u">
+        <doc>
+          <line>datasetId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="registrationStatus" type="u">
+        <doc>
+          <line>registrationStatus = Description missing</line>
+        </doc>
+      </arg>
+    </method>-->
+<!--    <method name="sdsDatasetUserDeregistration">
+      <doc>
+        <line>sdsDatasetUserDeregistration = Request navigation to deregister for dataset user</line>
+      </doc>
+      <arg direction="in" name="ndsDataSetUser" type="u">
+        <doc>
+          <line>ndsDataSetUser (of type NdsDatasetUser) = Description missing</line>
+          <line>enum[NDS_DATASET_USER__SDS (0), NDS_DATASET_USER__UNKNOWN (null)]</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="datasetId" type="u">
+        <doc>
+          <line>datasetId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="deregistrationStatus" type="u">
+        <doc>
+          <line>deregistrationStatus = Description missing</line>
+        </doc>
+      </arg>
+    </method>-->
+<!--    <method name="datasetAccessModeChangedIndication">
+      <doc>
+        <line>datasetAccessModeChangedIndication = Request to change dataset access mode</line>
+      </doc>
+      <arg direction="in" name="ndsDataSetUser" type="u">
+        <doc>
+          <line>ndsDataSetUser (of type NdsDatasetUser) = Description missing</line>
+          <line>enum[NDS_DATASET_USER__SDS (0), NDS_DATASET_USER__UNKNOWN (null)]</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="datasetId" type="u">
+        <doc>
+          <line>datasetId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="ndsDataAccessType" type="u">
+        <doc>
+          <line>ndsDataAccessType = Description missing</line>
+        </doc>
+      </arg>
+    </method>-->
+  </interface>
+</node>

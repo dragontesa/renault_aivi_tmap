@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="introspect.xsd" name="org.bosch.cm.navigation">
+  <interface name="org.bosch.cm.navigation.NavigationDataUpdateService">
+<!--    <property access="read" name="favoriteUpdateRegions" type="(u(uuuau))"/>
+    <property access="read" name="installationStatus" type="(uuuuqbss)"/>
+    <property access="read" name="navDataStatus" type="u"/>
+    <property access="read" name="navDataContext" type="(ssa(suuuuubtsua(usau)a(sustbbttbb))(tt))"/>-->
+    <property access="read" name="navigationDataUpdateStatusInfo" type="(uyuss)">
+      <annotation name="org.qtproject.QtDBus.QtTypeName" value="NavigationDataUpdateStatusInfo"/>
+    </property>
+    <property access="read" name="mapDataDeleteStatusInfo" type="(uyuss)">
+      <annotation name="org.qtproject.QtDBus.QtTypeName" value="NavigationDataDeleteStatusInfo"/>
+    </property>
+<!--    <property access="read" name="catalogueStatus" type="u"/>
+    <property access="read" name="mapupdateExportStatus" type="u"/>
+    <property access="read" name="deviceInfos" type="a(uuu)"/>-->
+    <method name="DiagPerformFullUpdateViaUSB">
+      <doc>
+        <line>DiagPerformFullUpdateViaUSB = Diagnosis request full update via USB in Diagnostic mode</line>
+        <line>Response: Update result (SUCCESSFUL, FAILED, DECLINED)</line>
+      </doc>
+      <arg direction="out" name="ack" type="u">
+        <doc>
+          <line>ack (of type NavigationDataUpdateServiceAck) = Description missing</line>
+          <line>enum[ACCEPTED (null), DECLINED__CANNOT_PROCESS (null), DECLINED__REQUEST_ACTIVE (null)]</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="DiagPerformFullDeleteMapData">
+      <doc>
+        <line>DiagPerformFullDeleteMapData = Diagnosis request full delete map data in Diagnostic mode</line>
+        <line>Response: Enable shipping defect samples out of Korea without the Korean map</line>
+        <line>Scope:   Only valid for A-IVI Korea navigation</line>
+      </doc>
+      <arg direction="out" name="ack" type="u">
+        <doc>
+          <line>ack (of type MapDataDeleteServiceAck) = Description missing</line>
+          <line>enum[ACCEPTED (null), DECLINED__CANNOT_PROCESS (null), DECLINED__REQUEST_ACTIVE (null)]</line>
+        </doc>
+      </arg>
+    </method>
+<!--    <method name="getAvailableUpdates">
+      <doc>
+        <line>getAvailableUpdates = Request to get a list of all available updates.</line>
+        <line>For each update component one entry is contained if an update is available only.</line>
+      </doc>
+      <arg direction="out" name="availableUpdates" type="(ua(uuua(uua(uttt))))">
+        <doc>
+          <line>availableUpdates (of type AvailableUpdates) = Description missing</line>
+          <line>AvailableUpdates struct[result, products] = Describes the result og method GetAvailableUpdates.
+      If no updates are available result will be set to SUCCESS, but the ProductVersionInfo array is empty.</line>
+          <line>0: AvailableUpdates.result ('?') = Description missing</line>
+          <line>1: AvailableUpdates.products ('?') = Description missing</line>
+        </doc>
+      </arg>
+    </method>-->
+<!--    <method name="deleteUpdateComponent">
+      <doc>
+        <line>deleteUpdateComponent = Request to remove an updateable component from the data.</line>
+        <line>The componentId refers to the componentId used in other all requests. It uniquely identifies the updatable component.</line>
+      </doc>
+      <arg direction="in" name="productId" type="u">
+        <doc>
+          <line>productId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="supplierId" type="u">
+        <doc>
+          <line>supplierId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="regionId" type="au">
+        <doc>
+          <line>regionId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="result" type="u">
+        <doc>
+          <line>result (of type DeleteUpdateComponentResult) = Description missing</line>
+          <line>enum[DELETED (0), SUCCESS (1), FAILED_DEINSTALL_MISSING (2), FAILED_INSTALLER_BUSY (3), FAILED_REGION_NOT_INSTALLED (4), FAILED (5), UNKNOWN (6)]</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setFavoriteUpdateRegions">
+      <doc>
+        <line>setFavoriteUpdateRegions = Request to change the current favorite update regions (aka home regions).</line>
+        <line>Usually the user can select a certain country as its favorite region on the HMI.</line>
+        <line>Selected country can consists of one or more update regions. All update regions relates to the same product.</line>
+        <line>In case favorite updateRegions shall be deleted the list favoriteUpdateRegions is set to empty list.</line>
+      </doc>
+      <arg direction="in" name="productId" type="u">
+        <doc>
+          <line>productId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="supplierId" type="u">
+        <doc>
+          <line>supplierId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="baselineMapId" type="u">
+        <doc>
+          <line>baselineMapId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="updateRegionIds" type="au">
+        <doc>
+          <line>updateRegionIds = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="result" type="u">
+        <doc>
+          <line>result (of type SetFavoriteUpdateRegionsResult) = Description missing</line>
+          <line>enum[OK (0), FAILED_UPDATE_REGION_NOT_AVAILABLE (1), FAILED (2)]</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="clearFavoriteUpdateRegions">
+      <doc>
+        <line>clearFavoriteUpdateRegions = Request to remove current favorite region setting.</line>
+      </doc>
+      <arg direction="out" name="result" type="u">
+        <doc>
+          <line>result (of type ClearFavoriteUpdateRegionsResult) = Description missing</line>
+          <line>enum[OK (0), FAILED_NOT_ALLOWED (1), FAILED (2)]</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="startFullUpdate">
+      <doc>
+        <line>startFullUpdate = Request to install a full navigation data update if USB full update data is available.</line>
+      </doc>
+      <arg direction="out" name="result" type="u">
+        <doc>
+          <line>result (of type StartFullUpdateResult) = Description missing</line>
+          <line>enum[ACCEPTED (0), DECLINED__NO_FULL_UPDATE_AVAILABLE (1), DECLINED__SUBSCRIPTION_EXPIRED (2), DECLINED__BUSY (3), DECLINED (4)]</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="StartMapDataExport">
+      <doc>
+        <line>StartMapDataExport = Start MapData Export For A Device ID</line>
+      </doc>
+      <arg direction="in" name="deviceId" type="u">
+        <doc>
+          <line>deviceId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="deviceType" type="u">
+        <doc>
+          <line>deviceType = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="result" type="u">
+        <doc>
+          <line>result = Description missing</line>
+        </doc>
+      </arg>
+    </method>-->
+  </interface>
+</node>

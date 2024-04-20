@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="introspect.xsd" name="bosch.gui.cm.ai">
+  <interface name="bosch.gui.cm.ai.guicontrol">
+    <property access="read" name="NaviPropertyFocusConfig" type="y"/>
+    <method name="UpdateClientStatus">
+      <doc>
+        <line>UpdateClientStatus = Update Client status to Server</line>
+        <line>in -> name:   Application Name of Client</line>
+        <line>in -> status: status of client</line>
+      </doc>
+      <arg direction="in" name="name" type="s">
+        <doc>
+          <line>name = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="status" type="u">
+        <doc>
+          <line>status (of type ClientStatus) = Description missing</line>
+          <line>enum[CLIENT_STATUS_READY (null), CLIENT_STATUS_GUI_INITED (null), CLIENT_STATUS_GUI_SENSE_READY (null)]</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="UpdateSurfaceStateResp">
+      <doc>
+        <line>UpdateSurfaceStateResp = GUI State Response by Client</line>
+        <line>in -> SurfaceState  : the surface state to update</line>
+        <line>in -> u32SurfaceID  : Surface ID relates with state</line>
+        <line>in -> u32CommandID  : server generate the unique number to identify this command</line>
+      </doc>
+      <arg direction="in" name="SurfaceState" type="u">
+        <doc>
+          <line>SurfaceState = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="u32SurfaceID" type="u">
+        <doc>
+          <line>u32SurfaceID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="u32CommandID" type="u">
+        <doc>
+          <line>u32CommandID = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="ChangeSurfaceState">
+      <doc>
+        <line>ChangeSurfaceState = Client request to change surface state</line>
+        <line>in  -> SurfaceState : the surface state to update</line>
+        <line>out -> result       : the method result return by server</line>
+      </doc>
+      <arg direction="in" name="SurfaceState" type="u">
+        <doc>
+          <line>SurfaceState = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="AppID" type="u">
+        <doc>
+          <line>AppID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="result" type="u">
+        <doc>
+          <line>result = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="KeyForwarding">
+      <doc>
+        <line>KeyForwarding = forward a received (and not consumed) key event</line>
+      </doc>
+      <arg direction="in" name="keyRequest" type="(uy)">
+        <doc>
+          <line>keyRequest = Description missing</line>
+        </doc>
+      </arg>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="GCKeyInfo"/>
+    </method>
+    <method name="EncoderForwarding">
+      <doc>
+        <line>EncoderForwarding = forward a received (and not consumed) encoder event to stub</line>
+        <line>in -> encCode: Rotary ID like Joystick, Volume</line>
+        <line>in -> encValue: Step Size</line>
+      </doc>
+      <arg direction="in" name="encCode" type="i">
+        <doc>
+          <line>encCode = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="encValue" type="i">
+        <doc>
+          <line>encValue = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="BeepForwarding">
+      <doc>
+        <line>BeepForwarding = forward a beep request to stub</line>
+      </doc>
+      <arg direction="in" name="beepType" type="i">
+        <doc>
+          <line>beepType = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="GetPopupProperty">
+      <doc>
+        <line>GetPopupProperty = Get Popup Property</line>
+        <line>out -> u32LayerID    : Layer ID</line>
+        <line>out -> u32SurfaceID  : Surface ID</line>
+        <line>out -> u32Width      : Width</line>
+        <line>out -> u32Height     : Height</line>
+      </doc>
+      <arg direction="out" name="u32LayerID" type="u">
+        <doc>
+          <line>u32LayerID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="u32SurfaceID" type="u">
+        <doc>
+          <line>u32SurfaceID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="u32Width" type="u">
+        <doc>
+          <line>u32Width = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="u32Height" type="u">
+        <doc>
+          <line>u32Height = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="GetToastPopupProperty">
+      <doc>
+        <line>GetToastPopupProperty = Get Toast Popup Property</line>
+        <line>out -> u32LayerID    : Layer ID</line>
+        <line>out -> u32SurfaceID  : Surface ID</line>
+        <line>out -> u32Width      : Width</line>
+        <line>out -> u32Height     : Height</line>
+      </doc>
+      <arg direction="out" name="u32LayerID" type="u">
+        <doc>
+          <line>u32LayerID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="u32SurfaceID" type="u">
+        <doc>
+          <line>u32SurfaceID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="u32Width" type="u">
+        <doc>
+          <line>u32Width = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="u32Height" type="u">
+        <doc>
+          <line>u32Height = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="ShowPopup">
+      <doc>
+        <line>ShowPopup = Show Popup</line>
+        <line>in -> viewname: View Name</line>
+      </doc>
+      <arg direction="in" name="viewname" type="s">
+        <doc>
+          <line>viewname = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="HidePopup">
+      <doc>
+        <line>HidePopup = Hide Popup</line>
+        <line>in -> viewname: View Name</line>
+      </doc>
+      <arg direction="in" name="viewname" type="s">
+        <doc>
+          <line>viewname = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="ContextSwitchResponse">
+      <doc>
+        <line>ContextSwitchResponse = Called when update the Context switch state.</line>
+        <line>in	-> u8ContextState: the context state</line>
+        <line>0: If request to draw screen is accepted</line>
+        <line>1: If request to draw screen is rejected</line>
+        <line>2: If requested screen is rendered completely</line>
+        <line>3: If request is invalid</line>
+      </doc>
+      <arg direction="in" name="u8ContextState" type="y">
+        <doc>
+          <line>u8ContextState = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="SwitchToView">
+      <doc>
+        <line>SwitchToView = Third Party App request switch to other application view.</line>
+        <line>in	-> viewid: The view ID of the application</line>
+      </doc>
+      <arg direction="in" name="viewid" type="u">
+        <doc>
+          <line>viewid = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setEnavHMIProperty">
+      <doc>
+        <line>setEnavHMIProperty = Method to set HMI property for requesting HMI master setup the HMI view or something else. Such as show the popup volume view.</line>
+      </doc>
+      <arg direction="in" name="hmiPropertyStatus" type="(uu)">
+        <doc>
+          <line>hmiPropertyStatus = Description missing</line>
+        </doc>
+      </arg>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="EnavHMIProperty"/>
+      <arg direction="out" name="hmiPropertyresponse" type="(uu)">
+        <doc>
+          <line>hmiPropertyresponse = Description missing</line>
+        </doc>
+      </arg>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="EnavHMIProperty"/>
+    </method>
+    <signal name="Init_GUI">
+      <doc>
+        <line>Init_GUI = Inform Client to create HMI</line>
+        <line>out -> u32LayerID    : Layer ID</line>
+        <line>out -> u32SurfaceID  : Surface ID</line>
+        <line>out -> u32Width      : Width</line>
+        <line>out -> u32Height     : Height</line>
+      </doc>
+      <arg direction="out" name="u32LayerID" type="u">
+        <doc>
+          <line>u32LayerID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="u32SurfaceID" type="u">
+        <doc>
+          <line>u32SurfaceID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="u32Width" type="u">
+        <doc>
+          <line>u32Width = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="u32Height" type="u">
+        <doc>
+          <line>u32Height = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="UpdateSurfaceState">
+      <doc>
+        <line>UpdateSurfaceState = use this to control gui state</line>
+        <line>in -> u32CommandID  : server generate the unique number to identify this command</line>
+        <line>in -> SurfaceState  : the surface state to update</line>
+      </doc>
+      <arg direction="out" name="u32CommandID" type="u">
+        <doc>
+          <line>u32CommandID = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="SurfaceState" type="u">
+        <doc>
+          <line>SurfaceState = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="KeyInfoForwarding">
+      <doc>
+        <line>KeyInfoForwarding = broadcast key information to be processed by a particular client</line>
+      </doc>
+      <arg direction="out" name="data" type="(uy)">
+        <doc>
+          <line>data = Description missing</line>
+        </doc>
+      </arg>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="GCKeyInfo"/>
+    </signal>
+    <signal name="PopupStatus">
+      <doc>
+        <line>PopupStatus = broadcast popup status</line>
+      </doc>
+      <arg direction="out" name="surfaceId" type="u">
+        <doc>
+          <line>surfaceId = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="popupstatus" type="u">
+        <doc>
+          <line>popupstatus (of type StatusType) = Description missing</line>
+          <line>enum[HIDE (0), SHOW (1)]</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="ActivateExternalImageProvider">
+      <doc>
+        <line>ActivateExternalImageProvider = broadcast Act</line>
+      </doc>
+      <arg direction="out" name="targetState" type="u">
+        <doc>
+          <line>targetState = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="instanceIds" type="ai">
+        <doc>
+          <line>instanceIds = Description missing</line>
+        </doc>
+      </arg>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="InstanceIds"/>
+      <arg direction="out" name="consumerId" type="i">
+        <doc>
+          <line>consumerId = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="ExternalImageProviderTouch">
+      <doc>
+        <line>ExternalImageProviderTouch = todo</line>
+      </doc>
+      <arg direction="out" name="data" type="(yuuu)">
+        <doc>
+          <line>data = Description missing</line>
+        </doc>
+      </arg>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="TouchInfo"/>
+      <arg direction="out" name="instanceId" type="i">
+        <doc>
+          <line>instanceId = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="ContextSwitchRequest">
+      <doc>
+        <line>ContextSwitchRequest = Inform registered Client about show the requested screen(context)</line>
+        <line>out -> ContextSwitchRequest  : Inform registered Client to show the requested screen(context)</line>
+      </doc>
+      <arg direction="out" name="ContextSwitchRequest" type="u">
+        <doc>
+          <line>ContextSwitchRequest = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+  </interface>
+</node>

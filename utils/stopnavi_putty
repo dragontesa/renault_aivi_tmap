@@ -1,0 +1,6 @@
+#!/bin/sh
+putty\plink.exe -batch root@172.17.0.1 systemctl stop rbcm-navigationhall_ext_korea.service
+putty\plink.exe -batch root@172.17.0.1 systemctl status rbcm-navigationhall_ext_korea.service
+# stop lxc service 
+putty\plink.exe -batch root@172.17.0.1 systemctl stop rbcm-lxc-extnav.service
+putty\plink.exe -batch root@172.17.0.1 systemctl status rbcm-lxc-extnav.service

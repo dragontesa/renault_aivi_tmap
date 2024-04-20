@@ -1,0 +1,61 @@
+<node name="/com/bosch/AutomotiveProxy/PrivateDataEncryption" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+
+<!--
+ com.bosch.AutomotiveProxy.PrivateDataEncryption
+ @short_description: This interface offers methods to perform encryption and 
+                     decryption using a secure data container key.
+ @since: 1.0
+-->	
+  <interface name="com.bosch.AutomotiveProxy.PrivateDataEncryption">
+
+	<!--
+	 EncryptData:
+	 @agwKeyId:      This parameter has to be passed as #AP_AGW_KEY_0 for now.
+					 This parameter is reserved for future use when container
+					 can request for encryption using multiple keys.
+					 Possible enums are #APPdeKeyId defined in 
+					 #ap-private-data-encrypt-enums.h
+	 @plainData:     Plain data to be encrypted. 
+	 @errorCode:     The errorCode of encryption operation.
+					 Possible values are #ApPdeError defined in 
+					 #ap-private-data-encrypt-enums.h
+	 @encryptedData: Encrypted data is formatted wrapped data(with agwKeyId)
+                     returned after encryption.
+	 @since: 1.0
+
+	 Method to encrypt plain text using AES-CCM algorithm
+	-->
+	 <method name="EncryptData">
+		<annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+		<arg name="agwKeyId" type="y" direction="in"/>
+		<arg name="plainData" type="a(y)" direction="in"/>
+		<arg name="errorCode" type="n" direction="out"/>
+		<arg name="encryptedData" type="a(y)" direction="out"/>
+	 </method>
+
+	<!--
+	 DecryptData:
+	 @agwKeyId:      This parameter has be passed as #AP_AGW_KEY_0 for now.
+					 This parameter is reserved for future use when container
+					 can request for encryption using multiple keys.
+					 Possible enums are #APPdeKeyId defined in 
+					 #ap-private-data-encrypt-enums.h
+	 @encryptedData: Encrypted data is formatted wrapped data(with agwKeyId).
+	 @errorCode:     The errorCode of decryption operation.
+					 Possible values are #ApPdeError defined in 
+					 #ap-private-data-encrypt-enums.h
+	 @plainData:     Plaintext returned after decryption.
+	 @since: 1.0
+
+	 Method to decrypt encrypted text using AES-CCM algorithm.
+	-->
+	 <method name="DecryptData">
+		<annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+		<arg name="agwKeyId" type="y" direction="in"/>
+		<arg name="encryptedData" type="a(y)" direction="in"/>
+		<arg name="errorCode" type="n" direction="out"/>
+		<arg name="plainData" type="a(y)" direction="out"/>
+	 </method>
+ 
+  </interface>
+</node>

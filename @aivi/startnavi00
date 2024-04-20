@@ -1,0 +1,19 @@
+#!/bin/sh
+cd /lib/systemd/system
+if [ ! -f ./rbcm-navigationhall_ext_korea.service ]; then
+rwrfs
+mv 00rbcm-navigationhall_ext_korea.service rbcm-navigationhall_ext_korea.service
+fi
+
+if [ -f ./rbcm-navigationhall_ext_korea.service ]; then
+systemctl start rbcm-navigationhall_ext_korea.service
+systemctl status rbcm-navigationhall_ext_korea.service
+elif [ -f ./00rbcm-navigationhall_ext_korea.service ]; then
+systemctl start 00rbcm-navigationhall_ext_korea.service
+systemctl status 00rbcm-navigationhall_ext_korea.service
+else
+echo "not found navigationhall ext service !!"
+fi
+
+systemctl start rbcm-lxc-extnav.service
+systemctl -a | grep korea

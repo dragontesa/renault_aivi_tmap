@@ -1,0 +1,3 @@
+#!/bin/sh
+tag=$(date +'%Y%m%d_%H%M%S')
+scp root@172.17.0.1:/tmp/memlog.csv ../w0/TFT/profiling_gen3/memlog_$tag

@@ -1,0 +1,7 @@
+How to Deployy Linux container
+chmod +x 10_disable_korea_navi 20_deploy_navi_to_device 50_busybox_lxc 60_permit_for_lxc_extnav
+
+1) ./10_disable_korea_navi
+2) ./20_deploy_navi_to_device
+3) ./50_busybox_lxc
+4) ./60_permit_for_lxc_extnav

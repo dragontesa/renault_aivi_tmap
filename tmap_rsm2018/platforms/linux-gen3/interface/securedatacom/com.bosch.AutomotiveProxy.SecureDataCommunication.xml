@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<node name="/com/bosch/AutomotiveProxy/SecureDataCommunication" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+
+<!--
+
+ com.bosch.AutomotiveProxy.SecureDataCommunication
+ @short_description: 
+ @since: 1.0
+
+-->	
+  <interface name="com.bosch.AutomotiveProxy.SecureDataCommunication">
+<!--
+ SignWithDeviceKey:
+ @data: Data to be signed by the device specific key
+ @signature: Signature on the given data
+ @algorithm: algorithm shall be formed by an OR operation
+             on Key algorithm, hash algorithm,
+             output signature format, output signature
+             encoding and optional message type.
+
+             Refer the section commands flags for
+             sign_with_device_key in ap-sdc-enums.h
+             for all possible combinations of the algorithm.
+
+             e.g.
+             Key algorithm  = AGW_F_SIG_RSA     (0x01)
+             Hash algorithm = AGW_F_SIG_SHA256  (0x40)
+             Signature format = AGWCL_F_SIG_PKCS7 (0x300)
+             Signature encoding = AGW_F_SIG_SMIME (0x4000)
+             Message type = AGWCL_F_SIG_MSG (0x00000)
+
+             algorithm = 0x04341 = '17217'
+
+ @result:    This gives the result of the Signing operation.
+             All possible results are defined in #ApAgwclresult
+ @since: 1.0
+
+This method will generate a PKCS #7: CMS version 1.5 (Signed-data) signature on
+the given data. The device specific private key will be used for the signature. 
+-->
+ <method name="SignWithDeviceKey">
+    <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+    <arg name="data" type="ay" direction="in"/>
+    <arg name="algorithm" type="t" direction="in"/>
+    <arg name="signature" type="ay" direction="out"/>
+    <arg name="result" type="q" direction="out"/>
+ </method>
+
+ <!--
+ DecryptWithDeviceKey:
+ @ciphertext: Encrypted data
+ @plaintext: Plaintext resulting from decrypting the given data
+ @algorithm: algorithm shall be formed by an OR operation
+             on Key algorithm, encrypted data format and
+             encrypted data encoding.
+
+             Refer the section commands flags for
+             decrypt_with_device_key in ap-sdc-enums.h
+             for all possible combinations of the algorithm.
+
+             e.g.
+             Key algorithm  = AGW_F_SIG_RSA     (0x01)
+             Encrypted data format = AGWCL_F_DEC_PKCS7  (0x300)
+             Encrypted data encoding = AGWCL_F_DEC_SMIME (0x4000)
+
+             algorithm = 0x4301 = '17153'
+ @result:    This gives the result of th decrypt operation.
+             All possible results are defined in #ApAgwclresult
+ @since: 1.0
+
+This method will decrypt PKCS #7: CMS version 1.5 data (Encrypted-data) The
+device specific private key will be use for decrypting the ciphertext. 
+-->
+ <method name="DecryptWithDeviceKey">
+    <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+    <arg name="ciphertext" type="ay" direction="in"/>
+    <arg name="algorithm" type="t" direction="in"/>
+    <arg name="plaintext" type="ay" direction="out"/>
+    <arg name="result" type="q" direction="out"/>
+ </method>
+
+ <!--
+ GetDeviceCert:
+ @certificate: Certificate for the device specific key
+ @algorithm:  This represents the output certificate
+              encoding.
+              The possible values for output certificate
+              encoding are available in section output
+              certificate encoding of ap-sdc-enums.h
+
+              e.g. AGWCL_F_CERT_PEM 0x3000 = 12288
+
+ @result:    This gives the result of the GetDeviceCert operation.
+             All possible results are defined in #ApAgwclresult
+ @since: 1.0
+
+This method will return the certificate for the device specific key in PEM
+format. 
+-->
+
+ <method name="GetDeviceCert">
+    <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+    <arg name="algorithm" type="t" direction="in"/>
+    <arg name="certificate" type="ay" direction="out"/>
+    <arg name="result" type="q" direction="out"/>
+</method>
+ 
+  <!--
+ CheckCert:
+ @certificate: Certificate to check
+ @valid: 0 if the certificate can be verified up to the root, an 
+         error code of type ApCheckCertResult otherwise
+
+ @since: 1.0
+
+This method will take a DER encoded certificate and check if it is valid and if 
+the chain is valid up to the root certifcate. 
+-->
+
+ <method name="CheckCert">
+    <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+    <arg name="data" type="ay" direction="in"/>
+    <arg name="valid" type="q" direction="out"/>
+ </method>
+ 
+ </interface>
+</node>

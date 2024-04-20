@@ -1,0 +1,8 @@
+#!/bin/sh
+cd /home/root/bin
+su lxc_iddbus
+tag=$(date +'%Y%m%d_%H%M%S')
+./rdbus_naviext_live >> /tmp/naviext_idbus_log_$tag
+#LAST_PID=$!
+#echo "pid:$LAST_PID"
+

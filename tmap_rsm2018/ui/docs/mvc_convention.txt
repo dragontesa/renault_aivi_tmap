@@ -1,0 +1,87 @@
+﻿1. Presentation layer
+
+	- View는 PopupView나 View를 상속 받은 qml과 그 View와 연결된 C++ Mediator를 의미.
+
+	- main.qml에 있는 함수를 직접 호출하지 않는다.
+		- 각 View는 main.qml에 어떤 종속성도 갖지 않도록 유지.
+			- main.qml의 property를 읽고 쓰거나 method를 호출하지 않는다.
+
+	- 다른 View에 있는 메소드를 직접 호출하지 않는다.
+		- 각 View는 다른 View에 대해 어떤 종속성도 갖지 않도록 유지.
+			- 다른 View의 property를 읽고 쓰거나 method를 호출하지 않는다.
+		- 연결된 Mediator에 event를 보내는 방식으로 Mediator와만 communiation한다.
+
+	- Domain layer를 직접 호출하지 않는다.				
+		- Database, Network, 기타 업무 관련 API를 직접 호출하지 않는다.			
+			- View는 변화가 심한 경우 다른 것으로 교체될 수도 있음.
+			- Mediator는 소프트웨어 전체에서 View와 가장 강한 coupling을 가지고 있어서 Mediator 역시 필요하면 교체될 수 있음.	
+			- 따라서 Presentation layer는 Business Layer을 통해 Domain Layer와 communiation하는 형태로 느슨한 coupling를 유지해야 한다.			
+		- 가급적 Proxy를 Mediator에서 직접 호출하지 않는다.
+			- Command로 구현
+		- Command를 실행하여 Proxy에 접근한다.
+		
+	- Naming
+		- "Mediator" postfix 사용
+
+2. Business Layer
+
+	- Business Layer는 Domain Layer와 Presentation layer를 잇는 역할. 
+		- Command를 의미.	
+		- Business Logic은 데이터 표시까지를 의미하므로 Mediator 및 View까지 포함.
+		- Use Case(즐겨찾기등) 실현을 위한 논리만을 구현.
+			- 논리는 Command 객체로서 캡슐화되고 Notification에 의해 간단히 재사용될 수 있음.
+		- Presentation Layer와 Domain Layer로부터 발생된 변화가 서로에게 주는 영향을 최소화 한다.
+			- Domain Layer의 변화가 Presentation Layer에 전파되는 영향을 최소화 한다.
+			- Presentation Layer의 변화가 Domain Layer에 전파되는 영향을 최소화 한다.
+
+	- 명확한 이름 사용
+		- 모호한 이름은 개념적인 버그( Code Complete )			
+			
+	- 하나의 Command가 너무 많은 Notication을 다루지 않도록 한다.
+		- 만능 Command가 되지 않도록 한다.
+		- PureMVC 개발자는 3~4개의 Notication 정도만을 다루는 것을 추천. 
+			그 이상은 다른 Command를 추가하여 구현.			
+			
+	- Domain Layer에 View의 데이터 타입을 직접 전달하지 않는다.
+		- QML의 데이터 타입(QJSvalue)등을 Domain Layer에 직접 전달하지 않는다.
+			- 이 경우, Domain Layer는 특정 GUI에 무관하게 유지 됨.	
+			
+	- View에 데이터 전달시 API의 데이터 타입 자체를 전달하지 않는다.
+		- ValueObject를 정의하여 사용.
+			- 이 경우, Presentation Layer는 Database, Network, API등 특정 architecture에 대해 무관하게 유지 됨.			
+	- Naming
+		- Verb + Noun + Command
+		- "Command" postfix 사용
+
+3. Domain Layer
+
+	- Domain Layer는 특정 Use Case 구현과 무관한, 데이터 조회 및 저장 또는 특정 디바이스에 대한 접근의 추상화만을 구현. 
+		- Proxy와 ValueObject를 의미.
+
+	- 명확한 이름 사용
+		- 모호한 이름은 개념적인 버그( Code Complete )
+	
+	- 하나의 Proxy가 너무 많은 일을 하지 않도록 한다.
+		- 만능 Proxy가 되지 않도록 한다.
+	
+	- 다른 Proxy와 직접 communication하지 않는다.
+		- 다른 Proxy와의 communication은 Business Logic으로서 Business Layer의 Command를 통해서 구현.
+		
+	- Naming		
+		- "Proxy" postfix: Proxy 클래스
+		- "Dto" postfix: 일반적으로 Database Table 값에 접근하는 오브젝트 클래스명에 사용
+		- "Vo" postfix: Database가 아닌 Domain 데이터에 접근하는 모든 오브젝트 클래스명에 사용
+		- "Protocol" postfix: Proxy 클래스 상수 정의 클래스에 사용
+
+4. Singleton
+
+	- MVC 적용 주요 목적 중의 하나는 Singleton 제거.
+
+	- Business Layer(Notification, Command)에 의한 Use Case 구현 경로는 명확한 반면, Singleton은 메소드 호출 흐름 및 메소드 소스 자체를 분석해야 파악할 수 있음.
+	
+	- 참조하는 소스들이 많아질 수록 고치기 어려운 구조.
+	
+		- Business Layer(Command)를 통해 작은 단위들로 나누고 경로를 만드는 식으로 coupling 분산.
+
+	- 문자열, 파일 변환 처리와 같은 Use Case 구현과 직접적인 관련없는 유틸리티 클래스는 무방.		
+		- Proxy의 역할을 대신하지 않아야 한다.

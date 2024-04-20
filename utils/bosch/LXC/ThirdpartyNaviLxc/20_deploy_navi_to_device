@@ -1,0 +1,67 @@
+#!/bin/sh
+PRODUCTION_NAME=korea
+NAVI_DIR=/opt/bosch/navigation_kor
+DATA_DIR=/var/opt/bosch/dynamic/navigation_kor
+DEVICE=root@172.17.0.1
+ssh $DEVICE 'rwrfs'
+# copy bosch service which for third party navigation
+echo "copy container package to home .."
+scp Bosch/thirdparty-navi-container_armv7a.ipk $DEVICE:/home/root
+#scp Bosch/update/thirdparty-navi-container_18.0.36_armv7a.ipk $DEVICE:/home/root
+scp Bosch/links_extnav.xml $DEVICE:/home/root
+scp Bosch/create_container_links.pl $DEVICE:/home/root
+ssh $DEVICE 'mkdir -p /opt/bosch/extnav'
+
+echo "copy bosch service for third party navigation to device .."
+scp Bosch/navigationhall_ext-${PRODUCTION_NAME}_out.out $DEVICE:/opt/bosch/base/bin/
+scp Bosch/NavigationHall_ext_${PRODUCTION_NAME}_logConfig.json $DEVICE:/opt/bosch/base/bin/
+scp Bosch/libhmisdkbase_so.so $DEVICE:/opt/bosch/hmibase/lib/libhmisdkbase_so.so
+scp Bosch/rbcm-navigationhall_ext_${PRODUCTION_NAME}.service $DEVICE:/lib/systemd/system/
+
+# copy third party navigation
+echo "backup original thirdparty navi and updated new .."
+ssh $DEVICE 'export tag=`(date +'%Y%m%d_B%H%M')` && mkdir bck_tmap_${tag} && tar czf /home/root/bck_tmap_${tag}/bck_tmap_${tag}.tar.gz -C /opt/bosch/navigation_kor lib res && cp -rf /opt/bosch/extnav /home/root/bck_tmap_${tag}'
+ssh $DEVICE "rm -rf $NAVI_DIR/lib/*"
+ssh $DEVICE "rm -rf $NAVI_DIR/res/*"
+ssh $DEVICE 'sync'
+
+ssh $DEVICE "mkdir -p $NAVI_DIR"
+ssh $DEVICE "mkdir -p $DATA_DIR"
+scp -r thirdpartynavi/lib $DEVICE:$NAVI_DIR
+scp -r thirdpartynavi/res $DEVICE:$NAVI_DIR
+scp -r thirdpartynavi/bin/thirdpartynavigation_out.out $DEVICE:/opt/bosch/extnav
+ssh $DEVICE "ln -sf libboost_system.so.1.57.0 $NAVI_DIR/lib/libboost_system.so"
+ssh $DEVICE "ln -sf libboost_system.so.1.57.0 $NAVI_IDR/lib/libboost_system.so.0"
+ssh $DEVICE "ln -sf libboost_random.so.1.57.0 $NAVI_DIR/lib/libboost_random.so"
+ssh $DEVICE "ln -sf libboost_random.so.1.57.0 $NAVI_DIR/lib/libboost_random.so.0"
+ssh $DEVICE "ln -sf libboost_date_time.so.1.57.0 $NAVI_DIR/lib/libboost_date_time.so"
+ssh $DEVICE "ln -sf libboost_date_time.so.1.57.0 $NAVI_DIR/lib/libboost_date_time.so.0"
+ssh $DEVICE 'sync'
+
+# set permissions
+echo "set permissions .."
+ssh $DEVICE 'chmod +x /opt/bosch/base/bin/navigationhall_ext-korea_out.out'
+ssh $DEVICE 'chmod +x /opt/bosch/hmibase/lib/libhmisdkbase_so.so'
+ssh $DEVICE 'chmod +x /home/root/thirdparty-navi-container_armv7a.ipk'
+#ssh $DEVICE 'chmod +x /home/root/thirdparty-navi-container_18.0.36_armv7a.ipk'
+ssh $DEVICE 'chmod +x /home/root/create_container_links.pl'
+ssh $DEVICE "chmod +rx $NAVI_DIR"
+ssh $DEVICE "chmod -R +rx $NAVI_DIR/lib"
+ssh $DEVICE "chmod -R +rx $NAVI_DIR/res"
+ssh $DEVICE "chwon -R lxc_ext:lxc_ext $DATA_DIR"
+ssh $DEVICE 'chmod +x /opt/bosch/extnav/thirdpartynavigation_out.out'
+ssh $DEVICE 'chown lxc_extnav:lxc_extnav /opt/bosch/extnav'
+ssh $DEVICE 'find /var/opt/bosch/navdata -type d -exec chmod 755 {} +'
+ssh $DEVICE 'find /var/opt/bosch/navdata -type f -exec chmod +r {} +'
+ssh $DEVICE 'chmod -R +rx /var/opt/bosch/navdata/navigation_kor_a'
+ssh $DEVICE 'chown -R lxc_extnav:lxc_extnav /var/opt/bosch/navdata'
+ssh $DEVICE 'sync'
+
+#rem setup container
+echo "setup container .."
+ssh $DEVICE 'opkg install --force-reinstall thirdparty-navi-container_armv7a.ipk'
+#perl create_container_links.pl --list links_extnav.xml --force
+ssh $DEVICE 'sync'
+echo "setup finished! system reboot .."
+ssh $DEVICE 'reboot -f'
+

@@ -1,0 +1,56 @@
+RBCM certtools
+==============
+
+The Robert Bosch Car Multimedia certtools are intended for engineers to switch crypto material in the device.
+Two scripts, which the engineer can use, are provided:
+
+    fetch_csr_data.sh   - Tool to execute on device and create an archive with data, which is used for device 
+                          signing process.
+    switch_pa_env.sh    - Tool to switch crypto material for environments. This tool can also install device 
+                          certificates.
+
+Installation
+------------
+
+    - copy rbcm-certtools_0.2.opk to /tmp on the device 
+        - e.g. using scp or WinSCP 
+    - make RFS writable by calling “rwrfs” on the target
+    - install certttols by calling “opkg install /tmp/rbcm-certtools_0.5.opk”
+    - certtools are installed now to /root folder
+
+Uninstall:
+---------
+    - make RFS writable by calling “rwrfs” on the target
+    - on device: “opkg remove rbcm-certtools”
+
+Usage
+-----
+
+    fetch_csr_data.sh
+
+    Can be triggered to create a certificate signing request for this device. The script will ask for the 
+    region and the environment, where the certificate shall be created for. After the input was given, it will fetch 
+    necessary information from the device and create an archive in /tmp. The user has to fetch the file and forward it 
+    to Bosch (Maxime), in order to get a signed device certificate for AIVI.
+
+    switch_pa_env.sh 
+    
+    Is used to switch the crypto material in the device for different environments. If it is called with –h, some help 
+    is printed. If it is called with “-e ENV”, the device will be switched to the given environment. Before switching, 
+    a backup of the device certificate is made, as long as one is available. at switching, the scrip checks if a device 
+    certificate backup is available for the destination environment and installs it. If no device certificate is found 
+    for the destination environment, the device will be prepared to fetch one from vNext. for this, the bootstrap URL 
+    is set and the part auth status reset. After a reboot the device will try to download a device cert from vNext.
+    If the user already has a device certificate, the switch_pa_env.sh script can be used to install this, by using the 
+    “-c CERTIFICATE_FILE” option, together with the destination environment (-e ENV ).
+
+
+Examples
+--------
+    
+    root@MyCar:~# ./fetch_csr_data.sh                   # Fetches CSR data and creates a /tmp/csr_*.tgz
+
+    root@MyCar:~# ./switch_pa_env.sh -e SIT             # Switches environment to SIT
+
+    root@MyCar:~# ./switch_pa_env.sh -e SIT -c XYZ.pem  # Installs signed device cert XYZ.pem for SIT environment.
+ 

@@ -1,0 +1,5 @@
+#!/bin/sh
+ssh root@172.17.0.1 'dlt-control -u -l 6 -a ENAV'
+ssh root@172.17.0.1 'dlt-control -u -l 6 -a CMPR'
+ssh root@172.17.0.1 'dlt-control -u -l 6 -c CSMG'
+ssh root@172.17.0.1 'dlt-control -o 172.17.0.1' # (optional, to save the dlt config after reboot)

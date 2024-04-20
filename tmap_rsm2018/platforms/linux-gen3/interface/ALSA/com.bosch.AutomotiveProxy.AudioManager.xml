@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+<!--
+  com.bosch.AutomotiveProxy.AudioManager:
+  @short_description: This interface is for audio manager on consumer domain to communicate with automotive domain.
+  @since: 1.0
+
+  This interface is used to get audio route from automotive domain and route
+  the audio stream from consumer domain to automotive domain for playback.
+  Whenever any audio application plays from consumer domain, audio handling
+  and management is done in automotive domain. To play an audio stream,
+  consumer domain audio manager requests for allocation of an audio source to
+  automotive domain. Audio source can be a MAIN source or MIXED source or 
+  an INTERRUPT source based on the audio role of the app. 
+
+  Currently available sources are,
+  
+  Main source:
+  #AP_AUDIO_SRC_MAIN_1
+  
+  Mixed source:
+  #AP_AUDIO_SRC_MIXED_1
+  
+  Interrupt source:
+  #AP_AUDIO_SRC_INTR_1
+  #AP_AUDIO_SRC_INTR_2
+
+-->
+  <interface name="com.bosch.AutomotiveProxy.AudioManager">
+
+  <!--
+    AudioRouteRequest:
+    @source: enum specifying the automotive domain audio source required by the audio app.
+    @state_required: enum specifying the audio source state required by the audio app.
+    @status: The status telling whether the requested source and state are handled.
+    @since: 1.0
+
+    This method should be called by consumer domain audio manager to request
+    audio route from automotive domain. The required audio sources can be a
+    main source or mixed source or interrupt source while required audio state can be
+    #AP_AUDIO_SRC_ACT_OFF, #AP_AUDIO_SRC_ACT_ON, #AP_AUDIO_SRC_ACT_PAUSE.
+    The return value will be TRUE if the required source and state is handled
+    by automotive domain, FALSE otherwise.
+    After calling this method, consumer domain audio manager should wait for
+    "SourceActivity" signal and then only start streaming audio based on audio
+    status received with the signal.
+    Consumer domain audio manager should clear the audio route when it is no
+    longer required. Note: uses async non-blocking method call.
+
+    example: source -> #AP_AUDIO_SRC_MAIN_1 and
+             state_required -> #AP_AUDIO_SRC_ACT_ON
+    here audio route allocation is requested for audio source
+    #AP_AUDIO_SRC_MAIN_1 If this method returns status -> TRUE then the
+    audio source request is handled in automotive domain, else not handled.
+
+    example: source -> #AP_AUDIO_SRC_MAIN_1 and
+             state_required -> #AP_AUDIO_SRC_ACT_OFF
+    here audio route deallocation is requested for audio source
+    #AP_AUDIO_SRC_MAIN_1 If it returns status -> TRUE then the audio
+    source deallocation request handling is successful, else failed.
+
+    example: source -> #AP_AUDIO_SRC_MAIN_1 and
+             state_required -> #AP_AUDIO_SRC_ACT_PAUSE
+    here pause is requested for audio source #AP_AUDIO_SRC_MAIN_1 If it
+    returns status -> TRUE then the audio source is pause is successful, else
+    failed.
+  -->
+  <method name="AudioRouteRequest">
+   <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+   <arg name="source" type="y" direction="in"/>
+   <arg name="state_required" type="y" direction="in"/>
+   <arg name="status" type="b" direction="out"/>
+  </method>
+
+  <!--
+    SourceAvailability:
+    @source: The source corresponding to apps that is available.
+    @availability: Boolean value indicating if the source is available or not.
+    @since: 1.0
+ 
+    Audio sources availability should be announced to the audio manager before
+    any audio request is made for that particular source. If a particular 
+    source is not registered as available, audio manager will not regard the 
+    audio request. Some sources may not be available at startup but could 
+    appear later. Therefore this method should be used to indicate the 
+    available audio sources.
+    Note: uses async non-blocking method call.
+  -->
+  <method name="SourceAvailability">
+   <annotation name="org.freedesktop.DBus.GLib.Async" value="yes"/>
+   <arg name="source" type="y" direction="in"/>
+   <arg name="availability" type="b" direction="in"/>
+  </method>
+
+  <!--
+    MuteState:
+    @source: enum specifying automotive domain audio source.
+    @state_required: boolean value indicating mute/unmute the audio source.
+    @since: 1.0
+    
+    Consumer domain audio manager can use this interface to mute/unmute audio source.
+    
+    Source can be a main source or mixed source or interrupt source.
+
+    Currently available sources are,
+  
+    Main source:
+    #AP_AUDIO_SRC_MAIN_1
+  
+    Mixed source:
+    #AP_AUDIO_SRC_MIXED_1
+  
+    Interrupt source:
+    #AP_AUDIO_SRC_INTR_1
+    #AP_AUDIO_SRC_INTR_2
+
+    State_required TRUE indicates mute (source not
+    audible) and FALSE indicates unmute (source audible).
+
+    example:
+    source -> AP_AUDIO_SRC_MAIN_1
+    state_required -> TRUE
+    
+    here the method is called to mute the specified audio source.
+  -->
+  <method name="MuteState">
+   <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+   <arg name="source" type="y" direction="in"/>
+   <arg name="state_required" type="b" direction="in"/>
+  </method>
+
+ <!--
+    OnMuteState:
+    @source: enum specifying automotive domain audio source.
+    @since: 1.0
+    
+    This event will be triggered by automotive domain to indicate a successful mute operation.
+
+    Possible source values are:
+
+    Main source:
+    #AP_AUDIO_SRC_MAIN_1
+  
+    Mixed source:
+    #AP_AUDIO_SRC_MIXED_1
+  
+    Interrupt source:
+    #AP_AUDIO_SRC_INTR_1
+    #AP_AUDIO_SRC_INTR_2
+    
+    Possible mute_state are defined in #ApAudioMuteStatus
+  -->
+
+  <signal name="OnMuteState">
+   <arg name="source" type="y"/>
+   <arg name="mute_state" type="y"/>
+  </signal>
+
+  <!--
+    SourceActivity:
+    @source: enum specifying automotive domain audio source.
+    @status: enum specifying the audio state for the audio source.
+    @since: 1.0
+    This event will be triggered on availability/unavailability of the audio
+    source with its status.
+    The Source can be a main or mixed or an interrupt source while the Status can be
+    #AP_AUDIO_SRC_ACT_OFF, #AP_AUDIO_SRC_ACT_ON, #AP_AUDIO_SRC_ACT_PAUSE.
+    Consumer domain should start audio streaming only on receiving
+    SourceActivity(#AP_AUDIO_SRC_ACT_ON), pause streaming on
+    SourceActivity(#AP_AUDIO_SRC_ACT_PAUSE), stop streaming on
+    SourceActivity(#AP_AUDIO_SRC_ACT_OFF).
+
+    example: source -> #AP_AUDIO_SRC_MAIN_1 and
+             status -> #AP_AUDIO_SRC_ACT_ON
+    Status ON received for #AP_AUDIO_SRC_MAIN_1 So consumer domain audio
+    manager should start streaming audio for app using
+    #AP_AUDIO_SRC_MAIN_1
+  -->
+  <signal name="SourceActivity">
+   <arg name="source" type="y"/>
+   <arg name="status" type="q"/>
+  </signal>
+
+
+  <!--
+    SourceActivityResult
+    @source: enum specifying automotive domain audio source.
+    @status: enum specifying the audio state for the audio source.
+    @since: 1.0
+
+    This method is to be called by consumer domain to let automotive
+    domain know that source activity signal is consumed successfully.
+
+    Possible source values are:
+
+    Main source:
+    #AP_AUDIO_SRC_MAIN_1
+  
+    Mixed source:
+    #AP_AUDIO_SRC_MIXED_1
+  
+    Interrupt source:
+    #AP_AUDIO_SRC_INTR_1
+    #AP_AUDIO_SRC_INTR_2
+
+    The possbile status values are:
+    #AP_AUDIO_SRC_ACT_ON
+    #AP_AUDIO_SRC_ACT_PAUSE
+    #AP_AUDIO_SRC_ACT_OFF
+
+
+    example:
+    Upon consuming the SourceActivity signal with state #AP_AUDIO_SRC_ACT_OFF
+    consumer domain shall stop the audio playback and call the SourceActivityResult
+    method to indicate automotive domain about the closure of audio playback.
+    
+  -->
+  <method name="SourceActivityResult">
+   <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+   <arg name="source" type="y" direction="in"/>
+   <arg name="status" type="q" direction="in"/>
+  </method>
+
+  <!--
+    OnAllocate:
+    @source: enum specifying automotive domain audio source.
+    @sink: list of Alsa device names to stream/record the audio content.
+    @since: 1.0
+    This is the event triggered on successful source allocation on which
+    client can get the source number.
+    
+    The sink parameter provides list of ALSA device names and its types.
+	
+	for e.g. 
+	[
+	  (#AP_AUDIO_INPUT, "AdevWebMicIn"), 
+	  (#AP_AUDIO_OUTPUT,"AdevWebVoiceOut")
+	]
+			
+  -->      
+   <signal name="OnAllocate">
+    <arg name="source" type="y"/>
+    <arg name="sink" type="a(ys)"/>
+   </signal>
+
+  <!--
+    OnDeAllocate:
+    @source: enum specifying the automotive domain audio source which should be dellocated.
+    @since: 1.0
+    This event is triggered by automotive domain audio manager to deallocate any
+    audio source.
+    In the consumer domain, audio stream has to be stopped and deallocated upon
+    receiving this signal.
+
+    example: source -> #AP_AUDIO_SRC_MAIN_1
+    Consumer domain application should destroy/dismantle the pipeline using
+    source #AP_AUDIO_SRC_MAIN_1
+  -->
+  <signal name="OnDeAllocate">
+  <arg name="source" type="y"/>
+  </signal>
+
+  </interface>
+</node>

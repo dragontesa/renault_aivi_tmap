@@ -1,0 +1,9 @@
+#!/bin/sh
+ssh root@172.17.0.1 'strings /var/opt/bosch/persistent/errmem > /tmp/errmem_log'
+tag=$(date +'%Y%m%d_%H%M%S')
+scp root@172.17.0.1:/tmp/errmem_log /media/sf_DATA0/w0/TFT/debug/log_aivi_gen3/errmem_$tag
+ssh root@172.17.0.1 'rwrfs'
+ssh root@172.17.0.1 'rm -f /var/opt/bosch/persistent/errmem'
+ssh root@172.17.0.1 'sync'
+ssh root@172.17.0.1 'rorfs'
+ 

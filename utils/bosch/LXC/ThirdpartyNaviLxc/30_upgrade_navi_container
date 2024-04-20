@@ -1,0 +1,9 @@
+#!/bin/sh
+DEVICE=root@172.17.0.1
+ssh $DEVICE 'systemctl stop rbcm-navigationhall_ext_korea.service'
+ssh $DEVICE 'systemctl stop rbcm-lxc-extnav.service'
+
+# remove all the lxc file
+ssh $DEVICE 'opkg install --force-reinstall thirdparty-navi-container_18.0.36_armv7a.ipk'
+ssh $DEVICE 'sync'
+ssh $DEVICE 'reboot -f'

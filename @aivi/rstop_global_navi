@@ -1,0 +1,3 @@
+#!/bin/sh
+cd /lib/systemd/system
+mv rbcm-apphmi_navigation.service rbcm-apphmi_navigation.service_

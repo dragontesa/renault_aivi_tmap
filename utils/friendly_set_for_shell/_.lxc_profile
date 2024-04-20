@@ -1,0 +1,22 @@
+alias ls='ls --color=auto'
+alias ll='ls -al'
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias dmon='dbus-monitor --address unix:path=/tmp/shared/iddbus/lxcdbus'
+
+export DBUS_SESSION_BUS_ADDRESS='unix:path=/tmp/shared/iddbus/lxcdbus'
+
+export SDSPATH='/com/bosch/cm/ai/navigationsds'
+export NSPATH='/com/bosch/cm/ai/navigation'
+export EXTPATH='/com/bosch/cm/ai/navigation/ext'
+export AGENTPATH='/com/bosch/cm/ai/navigation/ext/agent'
+export DRPATH='/com/bosch/DrPositionService'
+export GUIPATH='/bosch/gui/cm/ai/guicontrol'
+export PROPATH='/com/bosch/cm/profileMngr'
+export ZONEPATH='/bosch/cm/ai/nissan/hmi/zoneDataService'
+
+export APPDEST='App.Core.AppHmi_Navigation'
+export EXTDEST='App.Core.AppHmi_Navigation_Ext'
+export AUTODEST='com.bosch.AutomotiveProxy'
+
+export PATH=$PATH:$(pwd)

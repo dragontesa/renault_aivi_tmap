@@ -1,0 +1,9 @@
+#!/bin/sh
+if [ ! $# -gt 0 ]; then
+	echo "type method to call and it would need parameter"
+	exit
+fi
+
+RPOPERTY=$1
+dbus-send --bus=unix:path=/tmp/shared/iddbus/lxcdbus --dest=App.Core.AppHmi_Navigation_Ext --print-reply /com/bosch/cm/profileMngr org.freedesktop.DBus.Properties.Get string:bosch.cm.profile string:$RPOPERTY
+

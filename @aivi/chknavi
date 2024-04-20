@@ -1,0 +1,3 @@
+#!/bin/sh
+ssh root@172.17.0.1 'systemctl status rbcm-lxc-extnav'
+ssh root@172.17.0.1 'systemctl status rbcm-navigationhall_ext_korea'

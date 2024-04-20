@@ -1,0 +1,9 @@
+#!/bin/sh
+PATH_TO_DOWNLOAD=/media/sf_DATA0/w0/TFT/debug/log_aivi_gen3/
+if [ $# -gt 0 ]; then
+	PATH_TO_DOWNLOAD=$1
+fi
+
+tag=$(date +'%Y%m%d_%H%M%S')
+scp root@172.17.0.1:/tmp/ecm.log $PATH_TO_DOWNLOAD/ecm_$tag.log
+

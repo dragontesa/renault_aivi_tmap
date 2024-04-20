@@ -1,0 +1,8 @@
+#!/bin/sh
+FNC=DiagPerformFullUpdateViaUSB
+if [ $# -gt 0 ]; then
+ FNC=$1
+ PARAM=$2
+fi
+
+dbus-send --bus=unix:path=/tmp/shared/iddbus/lxcdbus --type=method_call --print-reply --dest=App.Core.AppHmi_Navigation /com/bosch/cm/ai/navigationDataUpdate org.bosch.cm.navigation.NavigationDataUpdateService.$FNC $PARAM

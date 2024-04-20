@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="introspect.xsd" name="org.bosch.cm.navigation">
+  <interface name="org.bosch.cm.navigation.NavigationService">
+    <property access="read" name="navStatus" type="u"/>
+    <property access="read" name="datasetVersion" type="s"/>
+    <property access="read" name="positionInformation" type="((dd)dssuddissssss)"/>
+    <property access="read" name="distanceToDestination" type="(suu)"/>
+    <property access="read" name="currentStreet" type="s"/>
+    <property access="read" name="turntoStreet" type="(us)"/>
+    <property access="read" name="roundaboutExitNumber" type="q"/>
+    <property access="read" name="nextTurntoStreet" type="s"/>
+    <property access="read" name="barGraphInfo" type="(bqquss)"/>
+    <property access="read" name="maneuverSymbol" type="u"/>
+    <property access="read" name="satelliteInfo" type="(yyysqy(dd))"/>
+    <property access="read" name="destinationInformation" type="a((dd)sss)"/>
+    <property access="readwrite" name="routeCalculationDuration" type="(uu)"/>
+    <property access="read" name="homeLocation" type="(s(dd)b)"/>
+    <property access="read" name="workLocation" type="(s(dd)b)"/>
+    <property access="read" name="mapRepresentation" type="u"/>
+    <property access="read" name="sdsAddressWithOptions" type="(a(us(b))(bbbbbb)au)"/>
+    <property access="read" name="waypointList" type="a((dd)us)"/>
+    <property access="read" name="maneuverView" type="(uu(buu))"/>
+    <property access="read" name="speedLimit" type="(bsqu)"/>
+    <property access="readwrite" name="trafficEnforcement" type="(uusuuu)"/>
+    <property access="read" name="nextManeuverDetails" type="(suubb)"/>
+    <property access="read" name="laneRecommendationList" type="a(uii)"/>
+    <property access="read" name="arrivalInformationList" type="a((suu)sisiiuuui)"/>
+    <property access="read" name="isAddressBookChanged" type="b"/>
+    <property access="read" name="isLastDestinationListChanged" type="b"/>
+    <property access="read" name="isVoiceGuidanceActive" type="b"/>
+    <property access="read" name="menuPoiCategoryShortcuts" type="a(su(ayu)y((nin)ub))"/>
+    <property access="read" name="OverSpeedSoundAlertInfoActive" type="b"/>
+    <property access="read" name="routeRecalculationReason" type="u"/>
+    <property access="read" name="waypointOperationStatusList" type="au"/>
+    <property access="read" name="destinationReachedStatus" type="u"/>
+    <property access="read" name="mapVideoStreamStatus" type="(uu)"/>
+    <method name="selectPoiCategoryShortcut">
+      <doc>
+        <line>selectPoiCategoryShortcut = Request to show the nearby POI category</line>
+      </doc>
+      <arg direction="in" name="shortcutIndex" type="y">
+        <doc>
+          <line>shortcutIndex = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="getNavDataPartNumber">
+      <doc>
+        <line>getNavDataPartNumber = Request to return back the OEM part number of the navigation data in use.</line>
+      </doc>
+      <arg direction="out" name="navDataPartNumber" type="(us)">
+        <doc>
+          <line>navDataPartNumber (of type NavDataPartNumber) = Description missing</line>
+          <line>NavDataPartNumber struct[result, partNumber] = Provides the result of the nav data partnumber request and the part number</line>
+          <line>0: NavDataPartNumber.result ('?') = Description missing</line>
+          <line>1: NavDataPartNumber.partNumber ('s') = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="getPoiCategoryShortcuts">
+      <doc>
+        <line>getPoiCategoryShortcuts = Returns the customized preferred category shortcuts</line>
+      </doc>
+      <arg direction="out" name="poiCategoryShortcuts" type="a(su(ayu)y((nin)ub))">
+        <doc>
+          <line>poiCategoryShortcuts = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setLocationWithCoordinates">
+      <doc>
+        <line>setLocationWithCoordinates = Request to set the latitude and longitude value</line>
+      </doc>
+      <arg direction="in" name="location" type="(dd)">
+        <doc>
+          <line>location = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setLocationWithDetails">
+      <doc>
+        <line>setLocationWithDetails = Request to set the latitude and longitude value and location details for further processing</line>
+      </doc>
+      <arg direction="in" name="location" type="((s(dd)b)ss(ayu))">
+        <doc>
+          <line>location = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="showPOILocationFromTCU">
+      <doc>
+        <line>showPOILocationFromTCU = Request will provide the &quot;Show POI location&quot; from TCU</line>
+      </doc>
+      <arg direction="in" name="poiLocations" type="a((s(dd)b)ss(ayu))">
+        <doc>
+          <line>poiLocations = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="storePOILocationToAddressBook">
+      <doc>
+        <line>storePOILocationToAddressBook = Request to store POI location to navigation address book</line>
+      </doc>
+      <arg direction="in" name="poiLocation" type="((s(dd)b)ss(ayu))">
+        <doc>
+          <line>poiLocation = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="storeLocationToAddressBook">
+      <doc>
+        <line>storeLocationToAddressBook = Request to store location to navigation address book</line>
+      </doc>
+      <arg direction="in" name="location" type="(s(dd)b)">
+        <doc>
+          <line>location = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="showCalculateTour">
+      <doc>
+        <line>showCalculateTour = Request will show route calculation screen with a route to the given list of locations each of which can have their own route criterion</line>
+      </doc>
+      <arg direction="in" name="tour" type="a(((s(dd)b)ss(ayu))bu)">
+        <doc>
+          <line>tour = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="screenTransition" type="u">
+        <doc>
+          <line>screenTransition (of type ScreenTransition) = switches the screen to different screens based on enum value</line>
+          <line>enum[ROUTE_INFO_SCREEN (1), MAIN_MAP_SCREEN (null)]</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="showOnMap">
+      <doc>
+        <line>showOnMap = Request shows the given location on map</line>
+      </doc>
+      <arg direction="in" name="location" type="(dd)">
+        <doc>
+          <line>location = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="showCarsorLocationOnMap">
+      <doc>
+        <line>showCarsorLocationOnMap = Request shows the carsor Location on map</line>
+      </doc>
+    </method>
+    <method name="showAdjustCurrentLocationScreen">
+      <doc>
+        <line>showAdjustCurrentLocationScreen = Method shows the screen to adjust the current location</line>
+      </doc>
+    </method>
+    <method name="showWhereAmIScreen">
+      <doc>
+        <line>showWhereAmIScreen = method to show the current position</line>
+      </doc>
+    </method>
+    <method name="showDeleteWaypointListScreen">
+      <doc>
+        <line>showDeleteWaypointListScreen = Method shows the screen to modify  waypoint list</line>
+      </doc>
+    </method>
+    <method name="setZoomInStep">
+      <doc>
+        <line>setZoomInStep = Request to zoom in the given step count</line>
+      </doc>
+      <arg direction="in" name="zoomInStep" type="y">
+        <doc>
+          <line>zoomInStep = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setZoomOutStep">
+      <doc>
+        <line>setZoomOutStep = Request to zoom out the given step count</line>
+      </doc>
+      <arg direction="in" name="zoomOutStep" type="y">
+        <doc>
+          <line>zoomOutStep = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setZoomLevel">
+      <doc>
+        <line>setZoomLevel = Request zooms to the given zoom level</line>
+      </doc>
+      <arg direction="in" name="zoomLevel" type="u">
+        <doc>
+          <line>zoomLevel = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="getVersionString">
+      <doc>
+        <line>getVersionString = Request will respond with the current NavMiddleware version string</line>
+      </doc>
+      <arg direction="out" name="versionString" type="s">
+        <doc>
+          <line>versionString = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="startGuidance">
+      <doc>
+        <line>startGuidance = method to start the guidance with the current LI / SDS destination</line>
+      </doc>
+    </method>
+    <method name="startGuidanceToPosWGS84">
+      <doc>
+        <line>startGuidanceToPosWGS84 = Request will start a guidance to the given WGS84 position</line>
+      </doc>
+      <arg direction="in" name="destination" type="(dd)">
+        <doc>
+          <line>destination = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="startGuidanceToHomeLocation">
+      <doc>
+        <line>startGuidanceToHomeLocation = method to start the guidance to home location</line>
+      </doc>
+    </method>
+    <method name="startGuidanceToWorkLocation">
+      <doc>
+        <line>startGuidanceToWorkLocation = method to start the guidance to work location</line>
+      </doc>
+    </method>
+    <method name="setLocationWithDestinationMemoryEntry">
+      <doc>
+        <line>setLocationWithDestinationMemoryEntry = Request will set location with destination memory entry id, At least once its required to request last destination/address book list before calling this interface</line>
+      </doc>
+      <arg direction="in" name="id" type="t">
+        <doc>
+          <line>id = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="cancelRouteGuidance">
+      <doc>
+        <line>cancelRouteGuidance = Request will stop the guidance</line>
+      </doc>
+    </method>
+    <method name="insertWaypointAtDefaultPosition">
+      <doc>
+        <line>insertWaypointAtDefaultPosition = Inserts current location as new waypoint in current waypoint list.</line>
+        <line>Index: Index internally defined by navigation application.</line>
+        <line>Once waypoint inserted property update ROUTE_WAYPOINTINFOS_CHANGED provides waypoint list</line>
+      </doc>
+    </method>
+    <method name="replaceWaypoint">
+      <doc>
+        <line>replaceWaypoint = Uses current location to replace waypoint</line>
+      </doc>
+      <arg direction="in" name="index" type="u">
+        <doc>
+          <line>index = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="deleteWaypoints">
+      <doc>
+        <line>deleteWaypoints = Delete the waypoints (including firstIndex and lastIndex)</line>
+      </doc>
+      <arg direction="in" name="firstIndex" type="u">
+        <doc>
+          <line>firstIndex = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="lastIndex" type="u">
+        <doc>
+          <line>lastIndex = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="applyWaypointListChange">
+      <doc>
+        <line>applyWaypointListChange = Uses modified waypoint list and trigger new route calculation</line>
+      </doc>
+    </method>
+    <method name="requestWaypointList">
+      <doc>
+        <line>requestWaypointList = Request for inserted way points list. Waypoint list provided on property update ROUTE_WAYPOINTINFOS_CHANGED</line>
+      </doc>
+    </method>
+    <method name="requestFreeTextSearchResults">
+      <doc>
+        <line>requestFreeTextSearchResults = Requests the specified range of free text search results for the search string and scope</line>
+      </doc>
+      <arg direction="in" name="searchString" type="s">
+        <doc>
+          <line>searchString = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="searchScope" type="u">
+        <doc>
+          <line>searchScope (of type FreeTextSearchScope) = Description missing</line>
+          <line>enum[FREETEXT_SEARCH_SCOPE_POI_AT_CURRENT_POSITION (null), FREETEXT_SEARCH_SCOPE_POI_AT_DESTINATION_POSITION (null), FREETEXT_SEARCH_SCOPE_POI_AT_LOCATION (null), FREETEXT_SEARCH_SCOPE_POI_ALONG_ROUTE (null), FREETEXT_SEARCH_SCOPE_POI_WHOLE_DATA (null), FREETEXT_SEARCH_SCOPE_ADDRESS_WHOLE_DATA (null), FREETEXT_SEARCH_SCOPE_COMBINED_WHOLE_DATA (null), FREETEXT_SEARCH_SCOPE_ON_WHOLE_DATASET (null)]</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="destinationIndex" type="y">
+        <doc>
+          <line>destinationIndex = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="startIndex" type="u">
+        <doc>
+          <line>startIndex = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="numElements" type="u">
+        <doc>
+          <line>numElements = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="searchResults" type="a(stssu(dd)((nin)ub))">
+        <doc>
+          <line>searchResults = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="undoFreeTextSearchElementSelection">
+      <doc>
+        <line>undoFreeTextSearchElementSelection = Request to clear the free text search elements</line>
+      </doc>
+    </method>
+    <method name="setLocationWithFreeTextSearchInput">
+      <doc>
+        <line>setLocationWithFreeTextSearchInput = Method to cleanup FTS search and set the given search result as current location, so that it can be started afterwards with startGuidance()</line>
+      </doc>
+      <arg direction="in" name="id" type="u">
+        <doc>
+          <line>id = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="showDestinationFreeTextSearchInput">
+      <doc>
+        <line>showDestinationFreeTextSearchInput = Request will respond with a contextSwitch to Navigation Destination Free text search</line>
+      </doc>
+      <arg direction="in" name="locationType" type="u">
+        <doc>
+          <line>locationType (of type FTSLocationType) = Description missing</line>
+          <line>enum[FREETEXT_SEARCH_TYPE_COMBINED (null), FREETEXT_SEARCH_TYPE_ADDRESS (null), FREETEXT_SEARCH_TYPE_POI (null)]</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="locationSearchScope" type="u">
+        <doc>
+          <line>locationSearchScope (of type FreeTextSearchScope) = Description missing</line>
+          <line>enum[FREETEXT_SEARCH_SCOPE_POI_AT_CURRENT_POSITION (null), FREETEXT_SEARCH_SCOPE_POI_AT_DESTINATION_POSITION (null), FREETEXT_SEARCH_SCOPE_POI_AT_LOCATION (null), FREETEXT_SEARCH_SCOPE_POI_ALONG_ROUTE (null), FREETEXT_SEARCH_SCOPE_POI_WHOLE_DATA (null), FREETEXT_SEARCH_SCOPE_ADDRESS_WHOLE_DATA (null), FREETEXT_SEARCH_SCOPE_COMBINED_WHOLE_DATA (null), FREETEXT_SEARCH_SCOPE_ON_WHOLE_DATASET (null)]</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="searchString" type="s">
+        <doc>
+          <line>searchString = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="sdsCheckAddress">
+      <doc>
+        <line>sdsCheckAddress = Request will validate the given address,</line>
+        <line>as result it update the attribute sdsAddressWithOptions</line>
+      </doc>
+      <arg direction="in" name="requestedAddress" type="a(us(b))">
+        <doc>
+          <line>requestedAddress = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="sdsGetRefinementList">
+      <doc>
+        <line>sdsGetRefinementList = Request will get refinement list for the validated address</line>
+      </doc>
+      <arg direction="out" name="refinements" type="a(susu)">
+        <doc>
+          <line>refinements = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="selectSdsRefinement">
+      <doc>
+        <line>selectSdsRefinement = Request will select the refinement with the id from refinement list and add internal to SDSAddress.</line>
+        <line>As result it update the attribute sdsAddressWithOptions</line>
+      </doc>
+      <arg direction="in" name="id" type="u">
+        <doc>
+          <line>id = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setLocationWithSdsInput">
+      <doc>
+        <line>setLocationWithSdsInput = Request will set the SDS Address as destination or waypoint</line>
+      </doc>
+    </method>
+    <method name="requestDestinationMemoryEntries">
+      <doc>
+        <line>requestDestinationMemoryEntries = Request will return DestinationMemory entries for the given category</line>
+      </doc>
+      <arg direction="in" name="categoryType" type="u">
+        <doc>
+          <line>categoryType = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="destinationMemoryEntries" type="a((stu)(sssssssssssa(sus))(dd))">
+        <doc>
+          <line>destinationMemoryEntries = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setMapRepresentation">
+      <doc>
+        <line>setMapRepresentation = method to select map representation:  dimension/heading combination</line>
+      </doc>
+      <arg direction="in" name="representation" type="u">
+        <doc>
+          <line>representation = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="requestDetailsForSelectedLocation">
+      <doc>
+        <line>requestDetailsForSelectedLocation = Request will respond with location details for the selected location set via setLocationWithXYZ interface</line>
+      </doc>
+      <arg direction="out" name="locationDetail" type="(sssssssss(dd))">
+        <doc>
+          <line>locationDetail (of type LocationDetails) = Description missing</line>
+          <line>LocationDetails struct[cityName, countryName, countryCode, stateName, stateCode, phoneNumber, poiAddress, streetName, zipCode, coordinate] = struct contain location details of the requested location</line>
+          <line>0: LocationDetails.cityName ('s') = String cityName contain city name</line>
+          <line>1: LocationDetails.countryName ('s') = String countryName contain country full name</line>
+          <line>2: LocationDetails.countryCode ('s') = String countryCode contain country short name</line>
+          <line>3: LocationDetails.stateName ('s') = String stateName contain state full name</line>
+          <line>4: LocationDetails.stateCode ('s') = String stateCode contain state short name</line>
+          <line>5: LocationDetails.phoneNumber ('s') = String phoneNumber contains phone number</line>
+          <line>6: LocationDetails.poiAddress ('s') = String poiAddress contains poi address</line>
+          <line>7: LocationDetails.streetName ('s') = String streetName contains street name</line>
+          <line>8: LocationDetails.zipCode ('s') = String zipCode contains ZIP code</line>
+          <line>9: LocationDetails.coordinate ('?') = coordinate contains location's Latitude and Longitude information. (0.0,0.0) means its Invalid data</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="retriggerAcousticOutput">
+      <doc>
+        <line>retriggerAcousticOutput = method to retrigger the last voice output (guidance)</line>
+      </doc>
+    </method>
+    <method name="speakSamplePhrase">
+      <doc>
+        <line>speakSamplePhrase = method to trigger the sample voice Phrase</line>
+      </doc>
+      <arg direction="in" name="sampleVoicePhrase" type="u">
+        <doc>
+          <line>sampleVoicePhrase = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setRouteCriterion">
+      <doc>
+        <line>setRouteCriterion = set RouteCriterion settings and apply them to recalculate</line>
+      </doc>
+      <arg direction="in" name="routeCriterion" type="u">
+        <doc>
+          <line>routeCriterion (of type RouteCriterion) = Description missing</line>
+          <line>enum[ROUTE_CRITERION_ECONOMIC (null), ROUTE_CRITERION_FAST (null), ROUTE_CRITERION_SHORT (null), ROUTE_CRITERION_MINIMIZE_FREEWAY (null)]</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="setVoiceGuidance">
+      <doc>
+        <line>setVoiceGuidance = method to set and get the guidance settings element for voice</line>
+      </doc>
+      <arg direction="in" name="active" type="b">
+        <doc>
+          <line>active = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="sdsGetHouseNumberPattern">
+      <doc>
+        <line>sdsGetHouseNumberPattern = Request will get house number patterns and the minimum and maximum values of the current SDSAddress</line>
+      </doc>
+      <arg direction="out" name="minHouseNumber" type="s">
+        <doc>
+          <line>minHouseNumber = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="maxHouseNumber" type="s">
+        <doc>
+          <line>maxHouseNumber = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="patterns" type="as">
+        <doc>
+          <line>patterns = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="showLocationSelectionAndGetAddressDetails">
+      <doc>
+        <line>showLocationSelectionAndGetAddressDetails = Request will respond with Address Details along with Destination Memory Id</line>
+      </doc>
+      <arg direction="out" name="destinationMemoryDetailListElement" type="((stu)(sssssssssssa(sus))(dd))">
+        <doc>
+          <line>destinationMemoryDetailListElement = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="showAndSetLocationWithDetails">
+      <doc>
+        <line>showAndSetLocationWithDetails = Request to set the latitude and longitude value and location details for showing them and for further processing</line>
+      </doc>
+      <arg direction="in" name="location" type="((s(dd)b)ss(ayu))">
+        <doc>
+          <line>location = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="navigationVersion">
+      <doc>
+        <line>navigationVersion = Request will get the version tag of navigation delivery</line>
+      </doc>
+      <arg direction="out" name="navigationCoreVersion" type="s">
+        <doc>
+          <line>navigationCoreVersion = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="startMapVideoStream">
+      <doc>
+        <line>startMapVideoStream = Requests to render the MapVideoStream in the cluster</line>
+      </doc>
+      <arg direction="in" name="mapVideoStreamDimensions" type="(uu)">
+        <doc>
+          <line>mapVideoStreamDimensions (of type MapVideoStreamDimensions) = Description missing</line>
+          <line>MapVideoStreamDimensions struct[width, height] = struct contain Map video stream dimensions in pixels</line>
+          <line>0: MapVideoStreamDimensions.width ('u') = UInt32 width represents the width of the map video Stream in pixels</line>
+          <line>1: MapVideoStreamDimensions.height ('u') = UInt32 height represents the height of the map video Stream in pixels</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="ipAddress" type="s">
+        <doc>
+          <line>ipAddress = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="portnumber" type="q">
+        <doc>
+          <line>portnumber = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="videoType" type="q">
+        <doc>
+          <line>videoType = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="mapVideoStreamResult" type="(uu)">
+        <doc>
+          <line>mapVideoStreamResult (of type MapVideoStreamResult) = Description missing</line>
+          <line>MapVideoStreamResult struct[mapVideoStreamStatus, mapVideoStreamHandle] = struct contains the result of the Map video stream request</line>
+          <line>0: MapVideoStreamResult.mapVideoStreamStatus ('?') = MapVideoStreamStatus mapVideoStreamStatus represents the status of the map video Stream</line>
+          <line>1: MapVideoStreamResult.mapVideoStreamHandle ('u') = UInt32 mapVideoStreamHandle represents the response Id of the mapVideo Stream request</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="modifyMapVideoStream">
+      <doc>
+        <line>modifyMapVideoStream = Requests to modify the MapVideoStream of the cluster</line>
+      </doc>
+      <arg direction="in" name="mapVideoStreamHandle" type="u">
+        <doc>
+          <line>mapVideoStreamHandle = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="mapVideoStreamDimensions" type="(uu)">
+        <doc>
+          <line>mapVideoStreamDimensions (of type MapVideoStreamDimensions) = Description missing</line>
+          <line>MapVideoStreamDimensions struct[width, height] = struct contain Map video stream dimensions in pixels</line>
+          <line>0: MapVideoStreamDimensions.width ('u') = UInt32 width represents the width of the map video Stream in pixels</line>
+          <line>1: MapVideoStreamDimensions.height ('u') = UInt32 height represents the height of the map video Stream in pixels</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="videoType" type="q">
+        <doc>
+          <line>videoType = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="mapVideoStreamResult" type="(uu)">
+        <doc>
+          <line>mapVideoStreamResult (of type MapVideoStreamResult) = Description missing</line>
+          <line>MapVideoStreamResult struct[mapVideoStreamStatus, mapVideoStreamHandle] = struct contains the result of the Map video stream request</line>
+          <line>0: MapVideoStreamResult.mapVideoStreamStatus ('?') = MapVideoStreamStatus mapVideoStreamStatus represents the status of the map video Stream</line>
+          <line>1: MapVideoStreamResult.mapVideoStreamHandle ('u') = UInt32 mapVideoStreamHandle represents the response Id of the mapVideo Stream request</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="deleteMapVideoStream">
+      <doc>
+        <line>deleteMapVideoStream = Requests to delete a MapVideoStream from the cluster</line>
+      </doc>
+      <arg direction="in" name="mapVideoStreamHandle" type="u">
+        <doc>
+          <line>mapVideoStreamHandle = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="mapVideoStreamResult" type="(uu)">
+        <doc>
+          <line>mapVideoStreamResult (of type MapVideoStreamResult) = Description missing</line>
+          <line>MapVideoStreamResult struct[mapVideoStreamStatus, mapVideoStreamHandle] = struct contains the result of the Map video stream request</line>
+          <line>0: MapVideoStreamResult.mapVideoStreamStatus ('?') = MapVideoStreamStatus mapVideoStreamStatus represents the status of the map video Stream</line>
+          <line>1: MapVideoStreamResult.mapVideoStreamHandle ('u') = UInt32 mapVideoStreamHandle represents the response Id of the mapVideo Stream request</line>
+        </doc>
+      </arg>
+    </method>
+  </interface>
+</node>
